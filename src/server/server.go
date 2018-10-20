@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"cloud-receipts/src/server/endpoint"
+	"server/src/server/endpoint"
 )
 
 type Server struct {
@@ -27,5 +27,5 @@ func (s *Server) RegisterHandler(route string, handler endpoint.Handler) {
 }
 
 func (s *Server) ListenAndServe() {
-	http.ListenAndServe(":8000", nil)
+	http.ListenAndServe(":8080", nil)
 }

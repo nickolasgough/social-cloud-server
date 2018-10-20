@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"cloud-receipts/src/server"
+	"server/src/server"
 )
 
 func main() {

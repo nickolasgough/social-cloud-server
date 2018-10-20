@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"cloud-receipts/src/server/endpoint"
+	"server/src/server/endpoint"
 )
 
 type CreateHandler struct {}
