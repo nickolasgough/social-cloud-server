@@ -3,7 +3,7 @@ package server
 import (
 	"net/http"
 
-	"server/src/server/endpoint"
+	"social-cloud-server/src/server/endpoint"
 )
 
 type Server struct {

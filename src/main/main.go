@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"server/src/server"
+	"social-cloud-server/src/server"
 )
 
 func main() {

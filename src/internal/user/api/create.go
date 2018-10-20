@@ -3,7 +3,7 @@ package api
 import (
 	"context"
 
-	"server/src/server/endpoint"
+	"social-cloud-server/src/server/endpoint"
 )
 
 type CreateHandler struct {}
