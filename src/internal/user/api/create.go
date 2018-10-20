@@ -13,7 +13,7 @@ func NewCreateHandler() *CreateHandler {
 }
 
 type CreateRequest struct {
-	Amount int64
+	Name string `json:"name"`
 }
 
 type CreateResponse struct {

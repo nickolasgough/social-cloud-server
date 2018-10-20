@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"fmt"
 
 	"social-cloud-server/src/server/endpoint"
 )
@@ -27,5 +28,6 @@ func (s *Server) RegisterHandler(route string, handler endpoint.Handler) {
 }
 
 func (s *Server) ListenAndServe() {
+	fmt.Printf("Server listening on localhost at port 8080...\n")
 	http.ListenAndServe(":8080", nil)
 }

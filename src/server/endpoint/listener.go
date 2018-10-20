@@ -13,31 +13,37 @@ type Listener struct {
 }
 
 func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	rw.Header().Set("Content-Type", "application/json")
+	applyHeaders(&rw)
 	defer r.Body.Close()
 
-	b, err := ioutil.ReadAll(r.Body)
+	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		l.Error(rw, err)
 		return
 	}
+	fmt.Printf("Received body: %s\n", body)
 
 	request := l.Handler.Request()
-	err = json.Unmarshal(b, request)
+	err = json.Unmarshal(body, request)
 	if err != nil {
 		l.Error(rw, err)
+		fmt.Printf("Errored with: %s\n", err.Error())
 		return
 	}
+	fmt.Printf("Received request: %+v\n", request)
 
 	rawResponse, err := l.Handler.Process(context.Background(), request)
 	if err != nil {
 		l.Error(rw, err)
+		fmt.Printf("Errored with: %s\n", err.Error())
 		return
 	}
+	fmt.Printf("Responding with: %+v\n", rawResponse)
 
 	jsonResponse, err := json.Marshal(rawResponse)
 	if err != nil {
 		l.Error(rw, err)
+		fmt.Printf("Errored with: %s\n", err.Error())
 		return
 	}
 
@@ -47,4 +53,10 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 func (l *Listener) Error(rw http.ResponseWriter, err error) {
 	rw.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(rw, "Error: %s", err.Error())
+}
+
+func applyHeaders(rw *http.ResponseWriter) {
+	(*rw).Header().Set("Content-Type", "application/json")
+	(*rw).Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
+	(*rw).Header().Set("Access-Control-Allow-Methods", "POST, GET")
 }
