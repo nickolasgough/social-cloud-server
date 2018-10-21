@@ -5,15 +5,18 @@ import (
 	"fmt"
 
 	"social-cloud-server/src/server/endpoint"
+	"social-cloud-server/src/database"
 )
 
 type Server struct {
-	Client *http.ServeMux
+	Client   *http.ServeMux
+	Database *database.Database
 }
 
-func NewServer(client *http.ServeMux) *Server {
+func NewServer(cl *http.ServeMux, db *database.Database) *Server {
 	return &Server{
-		Client: client,
+		Client: cl,
+		Database: db,
 	}
 }
 
