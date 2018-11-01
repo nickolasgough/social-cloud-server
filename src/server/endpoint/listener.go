@@ -21,21 +21,21 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 		l.Error(rw, err)
 		return
 	}
-	fmt.Printf("Received body: %s\n", body)
+	fmt.Printf("Received request body: %s\n", body)
 
 	request := l.Handler.Request()
 	err = json.Unmarshal(body, request)
 	if err != nil {
 		l.Error(rw, err)
-		fmt.Printf("Errored with: %s\n", err.Error())
+		fmt.Printf("Unmarshal errored with: %s\n", err.Error())
 		return
 	}
-	fmt.Printf("Received request: %+v\n", request)
+	fmt.Printf("Received request body: %+v\n", request)
 
 	rawResponse, err := l.Handler.Process(context.Background(), request)
 	if err != nil {
 		l.Error(rw, err)
-		fmt.Printf("Errored with: %s\n", err.Error())
+		fmt.Printf("Process errored with: %s\n", err.Error())
 		return
 	}
 	fmt.Printf("Responding with: %+v\n", rawResponse)
@@ -43,9 +43,10 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	jsonResponse, err := json.Marshal(rawResponse)
 	if err != nil {
 		l.Error(rw, err)
-		fmt.Printf("Errored with: %s\n", err.Error())
+		fmt.Printf("Marshal errored with: %s\n", err.Error())
 		return
 	}
+	fmt.Printf("Responding with: %s\n", jsonResponse)
 
 	fmt.Fprintf(rw, "%s", jsonResponse)
 }
