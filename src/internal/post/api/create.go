@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"errors"
+	"time"
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
@@ -19,11 +20,13 @@ func NewCreateHandler(db *database.Database) *CreateHandler {
 }
 
 type CreateRequest struct {
-	Name string `json:"name"`
+	Username string    `json:"username"`
+	Post     string    `json:"post"`
+	Datetime time.Time `json:"datetime"`
 }
 
 type CreateResponse struct {
-	Name string `json:"name"`
+	Success bool `json:"success"`
 }
 
 func (c *CreateHandler) Request() endpoint.Request {
@@ -36,21 +39,27 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 		return nil, errors.New("error: received a request that is not a CreateRequest")
 	}
 
-	err := c.db.ExecQuery(c.db.BuildQuery(createQuery, cr.Name))
+	err := c.db.ExecQuery(c.db.BuildQuery(createQuery, cr.Username, cr.Post, cr.Datetime))
 	if err != nil {
-		return nil, err
+		return &CreateResponse{
+			Success: false,
+		}, err
 	}
 
 	return &CreateResponse{
-		Name: cr.Name,
+		Success: true,
 	}, nil
 }
 
 const createQuery = `
-INSERT INTO profile (
-	name
+INSERT INTO post (
+	username,
+	post,
+	datetime
 )
 VALUES (
+	'%s',
+	'%s',
 	'%s'
 );
 `

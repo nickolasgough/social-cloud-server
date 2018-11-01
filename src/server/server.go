@@ -31,6 +31,14 @@ func (s *Server) RegisterHandler(route string, handler endpoint.Handler) {
 }
 
 func (s *Server) ListenAndServe() {
-	fmt.Printf("Server listening on localhost at port 8080...\n")
-	http.ListenAndServe(":8080", nil)
+	ip := "10.0.0.165"
+	port := "8080"
+	address := fmt.Sprintf("%s:%s", ip, port)
+
+	fmt.Printf("Server listening on %s at port %s...\n", ip, port)
+	err := http.ListenAndServe(address, nil)
+	if err != nil {
+		fmt.Printf("Error - failed to listen on %s\n", address)
+		fmt.Printf("%s\n", err.Error())
+	}
 }

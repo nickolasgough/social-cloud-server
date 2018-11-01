@@ -1,13 +1,15 @@
 package server
 
 import (
-	userApi "social-cloud-server/src/internal/user/api"
+	profileApi "social-cloud-server/src/internal/profile/api"
+	postApi "social-cloud-server/src/internal/post/api"
 
 	"social-cloud-server/src/server/endpoint"
 )
 
 func (s *Server) Routes() map[string]endpoint.Handler {
 	return map[string]endpoint.Handler{
-		"/user/create": userApi.NewCreateHandler(s.Database),
+		"/profile/create": profileApi.NewCreateHandler(s.Database),
+		"/post/create": postApi.NewCreateHandler(s.Database),
 	}
 }
