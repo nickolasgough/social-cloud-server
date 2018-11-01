@@ -21,7 +21,7 @@ func NewRequestHandler(db *database.Database) *RequestHandler {
 
 type RequestRequest struct {
 	Username   string    `json:"username"`
-	Connection string    `json:"post"`
+	Connection string    `json:"connection"`
 	Datetime   time.Time `json:"datetime"`
 }
 
@@ -56,12 +56,14 @@ INSERT INTO notification (
 	username,
 	type,
 	sender,
+	dismissed,
 	datetime
 )
 VALUES (
 	'%s',
 	'connection-request',
 	'%s',
+	false,
 	'%s'
 );
 `

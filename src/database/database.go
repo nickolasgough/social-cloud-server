@@ -49,16 +49,14 @@ func (db *Database) ConnectDatabase() error {
 
 func (db *Database) BuildModels() error {
 	modelQueries := []string{
-		profileModel.ModelDropQuery,
-		profileModel.ModelCreateQuery,
-
-		notificationModel.ModelDropQuery,
-		notificationModel.ModelCreateQuery,
-
-		connectionModel.ModelDropQuery,
-		connectionModel.ModelCreateQuery,
-
 		postModel.ModelDropQuery,
+		connectionModel.ModelDropQuery,
+		notificationModel.ModelDropQuery,
+		profileModel.ModelDropQuery,
+
+		profileModel.ModelCreateQuery,
+		notificationModel.ModelCreateQuery,
+		connectionModel.ModelCreateQuery,
 		postModel.ModelCreateQuery,
 	}
 

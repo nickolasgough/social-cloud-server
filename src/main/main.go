@@ -16,11 +16,11 @@ func main() {
 		fmt.Printf("Failed to connect to database: %s\n", err.Error())
 		os.Exit(1)
 	}
-	err = db.BuildModels()
-	if err != nil {
-		fmt.Printf("Failed to construct the database: %s\n", err.Error())
-		os.Exit(1)
-	}
+	//err = db.BuildModels()
+	//if err != nil {
+	//	fmt.Printf("Failed to construct the database: %s\n", err.Error())
+	//	os.Exit(1)
+	//}
 
 	s := server.NewServer(http.DefaultServeMux, db)
 	s.RegisterRoutes()

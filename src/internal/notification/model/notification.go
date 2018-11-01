@@ -21,7 +21,9 @@ CREATE TABLE notification (
 	dismissed BOOLEAN NOT NULL,
 	datetime TIMESTAMP NOT NULL,
 
-	PRIMARY KEY (username, datetime)
+	PRIMARY KEY (username, datetime),
+	FOREIGN KEY (username) references profile (username),
+	FOREIGN KEY (sender) references profile (username)
 );
 `
 
