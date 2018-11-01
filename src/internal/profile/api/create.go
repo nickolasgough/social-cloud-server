@@ -6,6 +6,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
+	"time"
 )
 
 type CreateHandler struct {
@@ -19,9 +20,10 @@ func NewCreateHandler(db *database.Database) *CreateHandler {
 }
 
 type CreateRequest struct {
-	Username    string `json:"username"`
-	Password    string `json:"password"`
-	DisplayName string `json:"displayname"`
+	Username    string    `json:"username"`
+	Password    string    `json:"password"`
+	DisplayName string    `json:"displayname"`
+	Datetime    time.Time `json:"datetime"`
 }
 
 type CreateResponse struct {
@@ -38,7 +40,7 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 		return nil, errors.New("error: received a request that is not a CreateRequest")
 	}
 
-	_, err := c.db.ExecQuery(c.db.BuildQuery(createQuery, cr.Username, cr.Password, cr.DisplayName))
+	_, err := c.db.ExecQuery(c.db.BuildQuery(createQuery, cr.Username, cr.Password, cr.DisplayName, cr.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &CreateResponse{
 			Success: false,
@@ -54,9 +56,11 @@ const createQuery = `
 INSERT INTO profile (
 	username,
 	password,
-	displayname
+	displayname,
+	datetime
 )
 VALUES (
+	'%s',
 	'%s',
 	'%s',
 	'%s'
