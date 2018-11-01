@@ -39,7 +39,7 @@ func (c *RequestHandler) Process(ctx context.Context, request endpoint.Request) 
 		return nil, errors.New("error: received a request that is not a RequestRequest")
 	}
 
-	err := c.db.ExecQuery(c.db.BuildQuery(requestQuery, cr.Username, cr.Connection, cr.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecQuery(c.db.BuildQuery(requestQuery, cr.Username, cr.Connection, cr.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &RequestResponse{
 			Success: false,

@@ -5,6 +5,11 @@ import (
 	"fmt"
 
 	_ "github.com/lib/pq"
+
+	connectionModel "social-cloud-server/src/internal/connection/model"
+	notificationModel "social-cloud-server/src/internal/notification/model"
+	postModel "social-cloud-server/src/internal/post/model"
+	profileModel "social-cloud-server/src/internal/profile/model"
 )
 
 const (
@@ -23,7 +28,7 @@ func NewDatabase() *Database {
 	return &Database{}
 }
 
-func (db *Database) Connect() error {
+func (db *Database) ConnectDatabase() error {
 	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 							host, port, user, password, dbname)
 
@@ -42,11 +47,35 @@ func (db *Database) Connect() error {
 	return nil
 }
 
+func (db *Database) BuildModels() error {
+	modelQueries := []string{
+		profileModel.ModelDropQuery,
+		profileModel.ModelCreateQuery,
+
+		notificationModel.ModelDropQuery,
+		notificationModel.ModelCreateQuery,
+
+		connectionModel.ModelDropQuery,
+		connectionModel.ModelCreateQuery,
+
+		postModel.ModelDropQuery,
+		postModel.ModelCreateQuery,
+	}
+
+	for _, modelQuery := range modelQueries {
+		_, err := db.ExecQuery(modelQuery)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func (db *Database) BuildQuery(format string, args ...interface{}) string {
 	return fmt.Sprintf(format, args...)
 }
 
-func (db *Database) ExecQuery(query string) error {
-	_, err := db.db.Exec(query);
-	return err
+func (db *Database) ExecQuery(query string) (sql.Result, error) {
+	return db.db.Exec(query)
 }
