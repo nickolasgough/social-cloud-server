@@ -61,7 +61,7 @@ func (db *Database) BuildModels() error {
 	}
 
 	for _, modelQuery := range modelQueries {
-		_, err := db.ExecQuery(modelQuery)
+		_, err := db.ExecStatement(modelQuery)
 		if err != nil {
 			return err
 		}
@@ -74,6 +74,10 @@ func (db *Database) BuildQuery(format string, args ...interface{}) string {
 	return fmt.Sprintf(format, args...)
 }
 
-func (db *Database) ExecQuery(query string) (sql.Result, error) {
+func (db *Database) ExecStatement(query string) (sql.Result, error) {
 	return db.db.Exec(query)
+}
+
+func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
+	return db.db.Query(query)
 }

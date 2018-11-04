@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strings"
 )
 
 type Listener struct {
@@ -16,7 +17,18 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	applyHeaders(&rw)
 	defer r.Body.Close()
 
-	body, err := ioutil.ReadAll(r.Body)
+	fmt.Printf("Recieved request from %s of type %s\n", r.URL, r.Method)
+
+	var body []byte
+	var err error
+	switch r.Method {
+		case "GET":
+			body, err = parseUrlParameters(r.URL.RawQuery)
+			break
+		case "POST":
+			body, err = ioutil.ReadAll(r.Body)
+			break
+	}
 	if err != nil {
 		l.Error(rw, err)
 		return
@@ -60,4 +72,15 @@ func applyHeaders(rw *http.ResponseWriter) {
 	(*rw).Header().Set("Content-Type", "application/json")
 	(*rw).Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
 	(*rw).Header().Set("Access-Control-Allow-Methods", "POST, GET")
+}
+
+func parseUrlParameters(query string) ([]byte, error) {
+	parameters := strings.Split(query, "&")
+	var jsonParams []string
+	for _, parameter := range parameters {
+		keyValues := strings.Split(parameter, "=")
+		jsonParam := fmt.Sprintf("\"%s\":\"%s\"", keyValues[0], keyValues[1])
+		jsonParams = append(jsonParams, jsonParam)
+	}
+	return []byte(fmt.Sprintf("{%s}", strings.Join(jsonParams, ","))), nil
 }
