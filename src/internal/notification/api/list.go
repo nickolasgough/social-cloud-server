@@ -27,7 +27,7 @@ type ListRequest struct {
 }
 
 type ListResponse struct {
-	Data []model.Notification `json:"data"`
+	Notifications []model.Notification `json:"notifications"`
 }
 
 func (c *ListHandler) Request() endpoint.Request {
@@ -51,7 +51,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, cr.Username, offset, limit))
 	if err != nil {
 		return &ListResponse{
-			Data: nil,
+			Notifications: nil,
 		}, err
 	}
 
@@ -62,32 +62,31 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 		err = results.Scan(&notification.Username, &notification.Type, &notification.Sender, &notification.Dismissed, &datetime)
 		if err != nil {
 			return &ListResponse{
-				Data: nil,
+				Notifications: nil,
 			}, err
 		}
 
 		notification.Datetime, err = time.Parse(time.RFC3339, datetime)
 		if err != nil {
 			return ListResponse{
-				Data: nil,
+				Notifications: nil,
 			}, err
 		}
 		data = append(data, notification)
 	}
 
 	return &ListResponse{
-		Data: data,
+		Notifications: data,
 	}, nil
 }
 
 const listQuery = `
-SELECT (
+SELECT
 	username,
 	type,
 	sender,
 	dismissed,
 	datetime
-)
 FROM notification
 WHERE username = '%s'
 OFFSET %s

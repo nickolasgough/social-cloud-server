@@ -5,9 +5,9 @@ import (
 )
 
 type Post struct {
-	Username string
-	Post     string
-	Datetime time.Time
+	Username string    `json:"username"`
+	Post     string    `json:"post"`
+	Datetime time.Time `json:"datetime"`
 }
 
 const ModelCreateQuery = `

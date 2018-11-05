@@ -3,10 +3,10 @@ package model
 import "time"
 
 type Profile struct {
-	Username    string
-	Password    string
-	Displayname string
-	Datetime    time.Time
+	Username    string    `json:"username"`
+	Password    string    `json:"password"`
+	Displayname string    `json:"displayname"`
+	Datetime    time.Time `json:"datetime"`
 }
 
 const ModelCreateQuery = `
