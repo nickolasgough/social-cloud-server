@@ -2,14 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9a8076a5-6a31-4998-a810-4802fe938261" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/internal/connection/api/request.go" afterPath="$PROJECT_DIR$/src/internal/connection/api/request.go" />
-      <change beforePath="$PROJECT_DIR$/src/internal/notification/api/list.go" afterPath="$PROJECT_DIR$/src/internal/notification/api/list.go" />
-      <change beforePath="$PROJECT_DIR$/src/internal/post/api/create.go" afterPath="$PROJECT_DIR$/src/internal/post/api/create.go" />
-      <change beforePath="$PROJECT_DIR$/src/internal/profile/api/create.go" afterPath="$PROJECT_DIR$/src/internal/profile/api/create.go" />
-      <change beforePath="$PROJECT_DIR$/src/internal/profile/api/login.go" afterPath="$PROJECT_DIR$/src/internal/profile/api/login.go" />
       <change beforePath="$PROJECT_DIR$/src/server/routes.go" afterPath="$PROJECT_DIR$/src/server/routes.go" />
-      <change beforePath="$PROJECT_DIR$/src/server/server.go" afterPath="$PROJECT_DIR$/src/server/server.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -30,12 +23,26 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="routes.go" pinned="false" current-in-tab="true">
+      <file leaf-file-name="routes.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/server/routes.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="150">
-              <caret line="17" column="63" lean-forward="false" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
-              <folding />
+            <state relative-caret-position="300">
+              <caret line="20" column="56" lean-forward="false" selection-start-line="20" selection-start-column="56" selection-end-line="20" selection-end-column="56" />
+              <folding>
+                <element signature="e#16#316#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="dismiss.go" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/internal/notification/api/dismiss.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="369">
+              <caret line="49" column="22" lean-forward="true" selection-start-line="49" selection-start-column="22" selection-end-line="49" selection-end-column="22" />
+              <folding>
+                <element signature="e#13#132#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -44,7 +51,7 @@
         <entry file="file://$PROJECT_DIR$/src/internal/notification/api/list.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1114">
-              <caret line="82" column="19" lean-forward="true" selection-start-line="82" selection-start-column="19" selection-end-line="82" selection-end-column="19" />
+              <caret line="82" column="19" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="93" selection-end-column="1" />
               <folding>
                 <element signature="e#13#187#0" expanded="true" />
               </folding>
@@ -77,21 +84,11 @@
       <file leaf-file-name="accept.go" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/internal/connection/api/accept.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="356">
-              <caret line="65" column="14" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="107" selection-end-column="1" />
+            <state relative-caret-position="663">
+              <caret line="61" column="87" lean-forward="false" selection-start-line="61" selection-start-column="87" selection-end-line="61" selection-end-column="118" />
               <folding>
                 <element signature="e#13#132#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="profile.go" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/internal/profile/model/profile.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="240">
-              <caret line="16" column="32" lean-forward="false" selection-start-line="16" selection-start-column="32" selection-end-line="16" selection-end-column="32" />
-              <folding />
             </state>
           </provider>
         </entry>
@@ -181,6 +178,7 @@
         <option value="$PROJECT_DIR$/src/internal/notification/api/list.go" />
         <option value="$PROJECT_DIR$/src/internal/connection/api/decline.go" />
         <option value="$PROJECT_DIR$/src/server/routes.go" />
+        <option value="$PROJECT_DIR$/src/internal/notification/api/dismiss.go" />
       </list>
     </option>
   </component>
@@ -336,16 +334,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/src/database/database.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="300">
-          <caret line="25" column="25" lean-forward="false" selection-start-line="25" selection-start-column="25" selection-end-line="25" selection-end-column="25" />
-          <folding>
-            <element signature="e#18#338#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/internal/profile/model/profile.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -645,26 +633,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/internal/notification/api/list.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1114">
-          <caret line="82" column="19" lean-forward="true" selection-start-line="82" selection-start-column="19" selection-end-line="82" selection-end-column="19" />
-          <folding>
-            <element signature="e#13#187#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/internal/connection/api/accept.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="356">
-          <caret line="65" column="14" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="107" selection-end-column="1" />
-          <folding>
-            <element signature="e#13#132#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/internal/connection/api/decline.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="336">
@@ -675,11 +643,43 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/internal/notification/api/list.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1114">
+          <caret line="82" column="19" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="93" selection-end-column="1" />
+          <folding>
+            <element signature="e#13#187#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/internal/connection/api/accept.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="663">
+          <caret line="61" column="87" lean-forward="false" selection-start-line="61" selection-start-column="87" selection-end-line="61" selection-end-column="118" />
+          <folding>
+            <element signature="e#13#132#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/server/routes.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="150">
-          <caret line="17" column="63" lean-forward="false" selection-start-line="17" selection-start-column="63" selection-end-line="17" selection-end-column="63" />
-          <folding />
+        <state relative-caret-position="300">
+          <caret line="20" column="56" lean-forward="false" selection-start-line="20" selection-start-column="56" selection-end-line="20" selection-end-column="56" />
+          <folding>
+            <element signature="e#16#316#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/internal/notification/api/dismiss.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="369">
+          <caret line="49" column="22" lean-forward="true" selection-start-line="49" selection-start-column="22" selection-end-line="49" selection-end-column="22" />
+          <folding>
+            <element signature="e#13#132#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
