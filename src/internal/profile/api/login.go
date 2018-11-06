@@ -35,12 +35,12 @@ func (c *LoginHandler) Request() endpoint.Request {
 }
 
 func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (endpoint.Response, error) {
-	cr, ok := request.(*LoginRequest)
+	r, ok := request.(*LoginRequest)
 	if !ok {
 		return nil, errors.New("error: received a request that is not a LoginRequest")
 	}
 
-	result, err := c.db.ExecQuery(c.db.BuildQuery(loginQuery, cr.Username, cr.Password))
+	result, err := c.db.ExecQuery(c.db.BuildQuery(loginQuery, r.Username, r.Password))
 	if err != nil {
 		return &LoginResponse{
 			Displayname: "",

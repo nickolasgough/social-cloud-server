@@ -35,20 +35,20 @@ func (c *ListHandler) Request() endpoint.Request {
 }
 
 func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (endpoint.Response, error) {
-	cr, ok := request.(*ListRequest)
+	r, ok := request.(*ListRequest)
 	if !ok {
 		return nil, errors.New("error: received a request that is not a ListRequest")
 	}
 
-	offset := cr.Cursor
+	offset := r.Cursor
 	if offset == "" {
 		offset = "0"
 	}
-	limit := cr.Limit
+	limit := r.Limit
 	if limit == "" {
 		limit = "10"
 	}
-	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, cr.Username, offset, limit))
+	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, offset, limit))
 	if err != nil {
 		return &ListResponse{
 			Notifications: nil,
@@ -88,7 +88,7 @@ SELECT
 	dismissed,
 	datetime
 FROM notification
-WHERE username = '%s'
+WHERE username = '%s' AND dismissed = false
 OFFSET %s
 LIMIT %s
 `

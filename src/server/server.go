@@ -31,7 +31,7 @@ func (s *Server) RegisterHandler(route string, handler endpoint.Handler) {
 }
 
 func (s *Server) ListenAndServe() {
-	ip := "10.227.143.68"
+	ip := "10.227.137.240"
 	port := "8080"
 	address := fmt.Sprintf("%s:%s", ip, port)
 

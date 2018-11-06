@@ -34,12 +34,12 @@ func (c *RequestHandler) Request() endpoint.Request {
 }
 
 func (c *RequestHandler) Process(ctx context.Context, request endpoint.Request) (endpoint.Response, error) {
-	cr, ok := request.(*RequestRequest)
+	r, ok := request.(*RequestRequest)
 	if !ok {
 		return nil, errors.New("error: received a request that is not a RequestRequest")
 	}
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(requestQuery, cr.Username, cr.Connection, cr.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(requestQuery, r.Username, r.Connection, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &RequestResponse{
 			Success: false,

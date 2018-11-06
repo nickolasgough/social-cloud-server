@@ -34,12 +34,12 @@ func (c *CreateHandler) Request() endpoint.Request {
 }
 
 func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (endpoint.Response, error) {
-	cr, ok := request.(*CreateRequest)
+	r, ok := request.(*CreateRequest)
 	if !ok {
 		return nil, errors.New("error: received a request that is not a CreateRequest")
 	}
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, cr.Username, cr.Post, cr.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Username, r.Post, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &CreateResponse{
 			Success: false,
