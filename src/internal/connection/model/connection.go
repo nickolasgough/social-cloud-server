@@ -6,9 +6,10 @@ import (
 
 
 type Connection struct {
-	Username string    `json:"username"`
-	Sender   string    `json:"sender"`
-	Datetime time.Time `json:"datetime"`
+	Username    string    `json:"username"`
+	Connection  string    `json:"connection"`
+	Displayname string    `json:"displayname"`
+	Datetime    time.Time `json:"datetime"`
 }
 
 const ModelCreateQuery = `

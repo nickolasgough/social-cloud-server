@@ -7,6 +7,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
+	"social-cloud-server/src/internal/feed/model"
 )
 
 type CreateHandler struct {
@@ -20,9 +21,10 @@ func NewCreateHandler(db *database.Database) *CreateHandler {
 }
 
 type CreateRequest struct {
-	Username string    `json:"username"`
-	Post     string    `json:"post"`
-	Datetime time.Time `json:"datetime"`
+	Username string         `json:"username"`
+	Feedname string         `json:"feedname"`
+	Members  []model.Member `json:"members"`
+	Datetime time.Time      `json:"datetime"`
 }
 
 type CreateResponse struct {
@@ -39,11 +41,13 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 		return nil, errors.New("error: received a request that is not a CreateRequest")
 	}
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Username, r.Post, r.Datetime.Format(time.RFC3339)))
-	if err != nil {
-		return &CreateResponse{
-			Success: false,
-		}, err
+	for _, member := range r.Members {
+		_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Username, r.Feedname, member.Connection, member.Datetime.Format(time.RFC3339), r.Datetime.Format(time.RFC3339)))
+		if err != nil {
+			return &CreateResponse{
+				Success: false,
+			}, err
+		}
 	}
 
 	return &CreateResponse{
@@ -52,12 +56,16 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 }
 
 const createQuery = `
-INSERT INTO post (
+INSERT INTO feed (
 	username,
-	post,
+	feedname,
+	connection,
+	joined,
 	datetime
 )
 VALUES (
+	'%s',
+	'%s',
 	'%s',
 	'%s',
 	'%s'
