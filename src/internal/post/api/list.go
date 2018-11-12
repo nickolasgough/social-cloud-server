@@ -7,7 +7,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
-	"social-cloud-server/src/internal/notification/model"
+	"social-cloud-server/src/internal/post/model"
 )
 
 type ListHandler struct {
@@ -22,12 +22,13 @@ func NewListHandler(db *database.Database) *ListHandler {
 
 type ListRequest struct {
 	Username string `json:"username"`
+	Feedname string `json:"feedname"`
 	Cursor   string `json:"cursor"`
 	Limit    string `json:"limit"`
 }
 
 type ListResponse struct {
-	Notifications []model.Notification `json:"notifications"`
+	Posts []model.Post `json:"posts"`
 }
 
 func (c *ListHandler) Request() endpoint.Request {
@@ -46,49 +47,54 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	}
 	limit := r.Limit
 	if limit == "" {
-		limit = "10"
+		limit = "25"
 	}
-	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, offset, limit))
+	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, r.Feedname, offset, limit))
 	if err != nil {
 		return &ListResponse{
-			Notifications: nil,
+			Posts: nil,
 		}, err
 	}
 
-	var data []model.Notification
-	var notification model.Notification
+	var data []model.Post
+	var post model.Post
 	var datetime string
 	for results.Next() {
-		err = results.Scan(&notification.Username, &notification.Type, &notification.Sender, &notification.Dismissed, &datetime)
+		err = results.Scan(&post.Username, &post.Displayname, &post.Post, &datetime)
 		if err != nil {
 			return &ListResponse{
-				Notifications: nil,
+				Posts: nil,
 			}, err
 		}
 
-		notification.Datetime, err = time.Parse(time.RFC3339, datetime)
+		post.Datetime, err = time.Parse(time.RFC3339, datetime)
 		if err != nil {
 			return ListResponse{
-				Notifications: nil,
+				Posts: nil,
 			}, err
 		}
-		data = append(data, notification)
+		data = append(data, post)
 	}
 
 	return &ListResponse{
-		Notifications: data,
+		Posts: data,
 	}, nil
 }
 
 const listQuery = `
 SELECT
-	username,
-	type,
-	sender,
-	dismissed,
-	datetime
-FROM notification
-WHERE username = '%s' AND dismissed = false
+	po.username,
+	pr.displayname,
+	po.post,
+	po.datetime
+FROM post po
+JOIN profile pr ON pr.username = po.username
+WHERE po.username IN (
+	SELECT
+		DISTINCT connection
+	FROM feed
+	WHERE username = '%s' AND feedname = '%s'
+)
 OFFSET %s
 LIMIT %s;
 `

@@ -7,7 +7,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
-	"social-cloud-server/src/internal/notification/model"
+	"social-cloud-server/src/internal/feed/model"
 )
 
 type ListHandler struct {
@@ -27,7 +27,7 @@ type ListRequest struct {
 }
 
 type ListResponse struct {
-	Notifications []model.Notification `json:"notifications"`
+	Feeds []model.Feed `json:"feeds"`
 }
 
 func (c *ListHandler) Request() endpoint.Request {
@@ -51,44 +51,64 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, offset, limit))
 	if err != nil {
 		return &ListResponse{
-			Notifications: nil,
+			Feeds: nil,
 		}, err
 	}
 
-	var data []model.Notification
-	var notification model.Notification
-	var datetime string
+	fmap := make(map[string]model.Feed)
+	var temp model.Feed
+	var feed model.Feed
+	var member model.Member
+	var fdatetime string
+	var mdatetime string;
 	for results.Next() {
-		err = results.Scan(&notification.Username, &notification.Type, &notification.Sender, &notification.Dismissed, &datetime)
+		err = results.Scan(&feed.Username, &feed.Feedname, &member.Connection, &mdatetime, &fdatetime)
 		if err != nil {
 			return &ListResponse{
-				Notifications: nil,
+				Feeds: nil,
 			}, err
 		}
 
-		notification.Datetime, err = time.Parse(time.RFC3339, datetime)
+		member.Datetime, err = time.Parse(time.RFC3339, mdatetime)
 		if err != nil {
 			return ListResponse{
-				Notifications: nil,
+				Feeds: nil,
 			}, err
 		}
-		data = append(data, notification)
+		feed.Datetime, err = time.Parse(time.RFC3339, fdatetime)
+		if err != nil {
+			return ListResponse{
+				Feeds: nil,
+			}, err
+		}
+
+		temp = fmap[feed.Feedname]
+		temp.Username = feed.Username
+		temp.Feedname = feed.Feedname
+		temp.Datetime = feed.Datetime
+		temp.Members = append(temp.Members, member)
+		fmap[temp.Feedname] = temp
+	}
+
+	var feeds []model.Feed
+	for _, feed := range fmap {
+		feeds = append(feeds, feed)
 	}
 
 	return &ListResponse{
-		Notifications: data,
+		Feeds: feeds,
 	}, nil
 }
 
 const listQuery = `
 SELECT
 	username,
-	type,
-	sender,
-	dismissed,
+	feedname,
+	connection,
+	joined,
 	datetime
-FROM notification
-WHERE username = '%s' AND dismissed = false
+FROM feed
+WHERE username = '%s'
 OFFSET %s
 LIMIT %s;
 `

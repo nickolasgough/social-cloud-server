@@ -19,8 +19,10 @@ func (s *Server) Routes() map[string]endpoint.Handler {
 		"/connection/decline": connectionApi.NewDeclineHandler(s.Database),
 		"/connection/list": connectionApi.NewListHandler(s.Database),
 		"/post/create": postApi.NewCreateHandler(s.Database),
+		"/post/list": postApi.NewListHandler(s.Database),
 		"/notification/list": notificationApi.NewListHandler(s.Database),
 		"/notification/dismiss": notificationApi.NewDismissHandler(s.Database),
 		"/feed/create": feedApi.NewCreateHandler(s.Database),
+		"/feed/list": feedApi.NewListHandler(s.Database),
 	}
 }
