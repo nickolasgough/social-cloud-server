@@ -49,7 +49,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		}, err
 	}
 
-	imageurl, err := c.db.UploadImage(ctx, "pikachu.png", imagefile)
+	imageurl, err := c.db.UploadImage(ctx, r.Filename, imagefile)
 	if err != nil {
 		return &UpdateResponse{
 			Imageurl: "",
