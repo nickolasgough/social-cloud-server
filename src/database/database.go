@@ -6,6 +6,8 @@ import (
 	"context"
 	"image"
 	"image/png"
+	"image/jpeg"
+	"google.golang.org/api/option"
 
 	_ "github.com/lib/pq"
 	"cloud.google.com/go/storage"
@@ -15,7 +17,8 @@ import (
 	notificationModel "social-cloud-server/src/internal/notification/model"
 	connectionModel "social-cloud-server/src/internal/connection/model"
 	feedModel "social-cloud-server/src/internal/feed/model"
-	"google.golang.org/api/option"
+
+	"social-cloud-server/src/internal/util"
 )
 
 const (
@@ -108,8 +111,16 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 func (db *Database) UploadImage(ctx context.Context, filename string, imagefile image.Image) (string, error) {
 	object := db.bt.Object(filename)
 	writer := object.NewWriter(ctx)
-	writer.ContentType = "image/png"
-	err := png.Encode(writer, imagefile)
+	writer.ContentType = util.ParseContentType(filename)
+
+	var err error
+	if writer.ContentType == "image/png" {
+		err = png.Encode(writer, imagefile)
+	} else if writer.ContentType == "image/jpg" {
+		err = jpeg.Encode(writer, imagefile, nil)
+	} else {
+		err = fmt.Errorf("social-cloud: unsupported file type: %s\n", writer.ContentType)
+	}
 	if err != nil {
 		return "", err
 	}

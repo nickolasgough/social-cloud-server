@@ -5,9 +5,13 @@ import (
 	"errors"
 	"bytes"
 	"image/png"
+	"image"
+	"image/jpeg"
+	"fmt"
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
+	"social-cloud-server/src/internal/util"
 )
 
 type UpdateHandler struct {
@@ -42,7 +46,16 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		return nil, errors.New("error: received a request that is not a UpdateRequest")
 	}
 
-	imagefile, err := png.Decode(bytes.NewReader(r.Imagefile))
+	contentType := util.ParseContentType(r.Filename)
+	var imagefile image.Image
+	var err error
+	if contentType == "image/png" {
+		imagefile, err = png.Decode(bytes.NewReader(r.Imagefile))
+	} else if contentType == "image/jpg" {
+		imagefile, err = jpeg.Decode(bytes.NewReader(r.Imagefile))
+	} else {
+		err = fmt.Errorf("social-cloud: unsupported file type: %s\n", contentType)
+	}
 	if err != nil {
 		return &UpdateResponse{
 			Imageurl: "",
