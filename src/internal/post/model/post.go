@@ -5,10 +5,15 @@ import (
 )
 
 type Post struct {
-	Username    string    `json:"username"`
-	Displayname string    `json:"displayname"`
-	Post        string    `json:"post"`
-	Datetime    time.Time `json:"datetime"`
+	Username string    `json:"username"`
+	Avatar   Avatar    `json:"avatar"`
+	Post     string    `json:"post"`
+	Datetime time.Time `json:"datetime"`
+}
+
+type Avatar struct {
+	Displayname string `json:"displayname"`
+	Imageurl    string `json:"imageurl"`
 }
 
 const ModelCreateQuery = `

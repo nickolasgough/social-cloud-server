@@ -65,7 +65,10 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 const loginQuery = `
 SELECT
 	displayname,
-	imageurl
+	CASE 
+		WHEN imageurl IS NULL THEN ''
+		ELSE imageurl
+	END
 FROM profile
 WHERE username = '%s' AND password = '%s';
 `

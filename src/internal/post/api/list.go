@@ -58,14 +58,16 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 
 	var data []model.Post
 	var post model.Post
+	var avator model.Avatar
 	var datetime string
 	for results.Next() {
-		err = results.Scan(&post.Username, &post.Displayname, &post.Post, &datetime)
+		err = results.Scan(&post.Username, &avator.Displayname, &avator.Imageurl, &post.Post, &datetime)
 		if err != nil {
 			return &ListResponse{
 				Posts: nil,
 			}, err
 		}
+		post.Avatar = avator
 
 		post.Datetime, err = time.Parse(time.RFC3339, datetime)
 		if err != nil {
@@ -85,6 +87,10 @@ const listQuery = `
 SELECT
 	po.username,
 	pr.displayname,
+	CASE
+		WHEN pr.imageurl IS NULL THEN ''
+		ELSE pr.imageurl
+	END,
 	po.post,
 	po.datetime
 FROM post po
