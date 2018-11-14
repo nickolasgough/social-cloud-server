@@ -3,14 +3,19 @@ package database
 import (
 	"database/sql"
 	"fmt"
+	"context"
+	"image"
+	"image/png"
 
 	_ "github.com/lib/pq"
+	"cloud.google.com/go/storage"
 
 	profileModel "social-cloud-server/src/internal/profile/model"
 	postModel "social-cloud-server/src/internal/post/model"
 	notificationModel "social-cloud-server/src/internal/notification/model"
 	connectionModel "social-cloud-server/src/internal/connection/model"
 	feedModel "social-cloud-server/src/internal/feed/model"
+	"google.golang.org/api/option"
 )
 
 const (
@@ -19,10 +24,15 @@ const (
 	user = "postgres"
 	password = "Nevergiveup1"
 	dbname = "socialclouddb"
+
+	projectID = "531719510691"
+	bucketName = "social-cloud-1540055012833.appspot.com"
+	credentialsPath = "/Users/nickolas-gough/Projects/go/src/social-cloud-server/src/key/social-cloud-69d9b56a1450.json"
 )
 
 type Database struct {
 	db *sql.DB
+	bt *storage.BucketHandle
 }
 
 func NewDatabase() *Database {
@@ -45,6 +55,16 @@ func (db *Database) ConnectDatabase() error {
 	}
 	fmt.Printf("Successfully established a connection to the database %s\n", dbname)
 
+	return nil
+}
+
+func (db *Database) ConnectBucket(ctx context.Context) error {
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile(credentialsPath))
+	if err != nil {
+		return err
+	}
+
+	db.bt = client.Bucket(bucketName)
 	return nil
 }
 
@@ -83,4 +103,24 @@ func (db *Database) ExecStatement(query string) (sql.Result, error) {
 
 func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 	return db.db.Query(query)
+}
+
+func (db *Database) UploadImage(ctx context.Context, filename string, imagefile image.Image) (string, error) {
+	object := db.bt.Object(filename)
+	writer := object.NewWriter(ctx)
+	writer.ContentType = "image/png"
+	err := png.Encode(writer, imagefile)
+	if err != nil {
+		return "", err
+	}
+	writer.Close()
+
+	acl := object.ACL()
+	err = acl.Set(ctx, storage.AllUsers, storage.RoleReader)
+	if err != nil {
+		return "", err
+	}
+
+	url := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, filename)
+	return url, nil
 }

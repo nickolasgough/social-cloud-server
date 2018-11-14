@@ -57,12 +57,14 @@ INSERT INTO profile (
 	username,
 	password,
 	displayname,
+	imageurl,
 	datetime
 )
 VALUES (
 	'%s',
 	'%s',
 	'%s',
+	NULL,
 	'%s'
 );
 `

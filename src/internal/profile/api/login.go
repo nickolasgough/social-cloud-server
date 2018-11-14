@@ -28,6 +28,7 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	Displayname string `json:"displayname"`
+	Imageurl    string `json:"imageurl"`
 }
 
 func (c *LoginHandler) Request() endpoint.Request {
@@ -47,24 +48,24 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 		}, err
 	}
 
-	var displayname string
+	var lr LoginResponse
 	if result.Next() {
-		err = result.Scan(&displayname)
+		err = result.Scan(&lr.Displayname, &lr.Imageurl)
 		if err != nil {
 			return &LoginResponse{
 				Displayname: "",
+				Imageurl: "",
 			}, err
 		}
 	}
 
-	return &LoginResponse{
-		Displayname: displayname,
-	}, nil
+	return &lr, nil
 }
 
 const loginQuery = `
 SELECT
-	displayname
+	displayname,
+	imageurl
 FROM profile
 WHERE username = '%s' AND password = '%s';
 `

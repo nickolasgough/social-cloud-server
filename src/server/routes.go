@@ -14,6 +14,7 @@ func (s *Server) Routes() map[string]endpoint.Handler {
 	return map[string]endpoint.Handler{
 		"/profile/create": profileApi.NewCreateHandler(s.Database),
 		"/profile/login": profileApi.NewLoginHandler(s.Database),
+		"/profile/update": profileApi.NewUpdateHandler(s.Database),
 		"/connection/request": connectionApi.NewRequestHandler(s.Database),
 		"/connection/accept": connectionApi.NewAcceptHandler(s.Database),
 		"/connection/decline": connectionApi.NewDeclineHandler(s.Database),
