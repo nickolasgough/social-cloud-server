@@ -5,18 +5,16 @@ import (
 	"fmt"
 	"context"
 	"image"
-	"image/png"
-	"image/jpeg"
 	"google.golang.org/api/option"
 
 	_ "github.com/lib/pq"
 	"cloud.google.com/go/storage"
 
-	profileModel "social-cloud-server/src/internal/profile/model"
+	//profileModel "social-cloud-server/src/internal/profile/model"
 	postModel "social-cloud-server/src/internal/post/model"
-	notificationModel "social-cloud-server/src/internal/notification/model"
-	connectionModel "social-cloud-server/src/internal/connection/model"
-	feedModel "social-cloud-server/src/internal/feed/model"
+	//notificationModel "social-cloud-server/src/internal/notification/model"
+	//connectionModel "social-cloud-server/src/internal/connection/model"
+	//feedModel "social-cloud-server/src/internal/feed/model"
 
 	"social-cloud-server/src/internal/util"
 )
@@ -74,15 +72,15 @@ func (db *Database) ConnectBucket(ctx context.Context) error {
 func (db *Database) BuildModels() error {
 	modelQueries := []string{
 		postModel.ModelDropQuery,
-		feedModel.ModelDropQuery,
-		connectionModel.ModelDropQuery,
-		notificationModel.ModelDropQuery,
-		profileModel.ModelDropQuery,
+		//feedModel.ModelDropQuery,
+		//connectionModel.ModelDropQuery,
+		//notificationModel.ModelDropQuery,
+		//profileModel.ModelDropQuery,
 
-		profileModel.ModelCreateQuery,
-		notificationModel.ModelCreateQuery,
-		connectionModel.ModelCreateQuery,
-		feedModel.ModelCreateQuery,
+		//profileModel.ModelCreateQuery,
+		//notificationModel.ModelCreateQuery,
+		//connectionModel.ModelCreateQuery,
+		//feedModel.ModelCreateQuery,
 		postModel.ModelCreateQuery,
 	}
 
@@ -108,23 +106,16 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 	return db.db.Query(query)
 }
 
-func (db *Database) UploadImage(ctx context.Context, filename string, imagefile image.Image) (string, error) {
+func (db *Database) UploadImage(ctx context.Context, filename string, contentType string, imagefile image.Image) (string, error) {
 	object := db.bt.Object(filename)
 	writer := object.NewWriter(ctx)
-	writer.ContentType = util.ParseContentType(filename)
+	writer.ContentType = contentType
 
-	var err error
-	if writer.ContentType == "image/png" {
-		err = png.Encode(writer, imagefile)
-	} else if writer.ContentType == "image/jpg" {
-		err = jpeg.Encode(writer, imagefile, nil)
-	} else {
-		err = fmt.Errorf("social-cloud: unsupported file type: %s\n", writer.ContentType)
-	}
+	err := util.EncodeImageFile(writer, imagefile)
+	writer.Close()
 	if err != nil {
 		return "", err
 	}
-	writer.Close()
 
 	acl := object.ACL()
 	err = acl.Set(ctx, storage.AllUsers, storage.RoleReader)

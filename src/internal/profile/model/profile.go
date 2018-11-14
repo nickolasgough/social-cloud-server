@@ -15,7 +15,7 @@ CREATE TABLE profile (
 	username VARCHAR(250) NOT NULL,
 	password VARCHAR(250) NOT NULL,
 	displayname VARCHAR(250) NOT NULL,
-	imageurl Text,
+	imageurl TEXT,
 	datetime TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (username)
