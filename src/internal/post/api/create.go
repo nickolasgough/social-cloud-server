@@ -82,12 +82,16 @@ INSERT INTO post (
 	username,
 	post,
 	imageurl,
+	likes,
+	dislikes,
 	datetime
 )
 VALUES (
 	'%s',
 	'%s',
 	%s,
+	0,
+	0,
 	'%s'
 );
 `

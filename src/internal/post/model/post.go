@@ -9,6 +9,8 @@ type Post struct {
 	Avatar   Avatar    `json:"avatar"`
 	Post     string    `json:"post"`
 	Imageurl string    `json:"imageurl"`
+	Likes    int       `json:"likes"`
+	Dislikes int       `json:"dislikes"`
 	Datetime time.Time `json:"datetime"`
 }
 
@@ -22,6 +24,8 @@ CREATE TABLE post (
 	username VARCHAR(250) NOT NULL,
 	post TEXT NOT NULL,
 	imageurl TEXT,
+	likes INTEGER,
+	dislikes INTEGER,
 	datetime TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (username, datetime),

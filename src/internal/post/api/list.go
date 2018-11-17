@@ -61,7 +61,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var avator model.Avatar
 	var datetime string
 	for results.Next() {
-		err = results.Scan(&post.Username, &avator.Displayname, &avator.Imageurl, &post.Post, &post.Imageurl, &datetime)
+		err = results.Scan(&post.Username, &avator.Displayname, &avator.Imageurl, &post.Post, &post.Imageurl, &post.Likes, &post.Dislikes, &datetime)
 		if err != nil {
 			return &ListResponse{
 				Posts: nil,
@@ -96,6 +96,8 @@ SELECT
 		WHEN po.imageurl IS NULL THEN ''
 		ELSE po.imageurl
 	END,
+	po.likes,
+	po.dislikes,
 	po.datetime
 FROM post po
 JOIN profile pr ON pr.username = po.username
