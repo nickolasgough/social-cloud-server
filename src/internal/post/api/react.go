@@ -47,14 +47,47 @@ func (c *ReactHandler) Process(ctx context.Context, request endpoint.Request) (e
 	} else {
 		field = "dislikes"
 	}
-	_, err := c.db.ExecStatement(c.db.BuildQuery(reactQuery, field, field, r.Post.Username, r.Post.Datetime.Format(time.RFC3339)))
+
+	_, err := c.db.ExecStatement(
+		c.db.BuildQuery(
+			postQuery,
+			field,
+			field,
+			r.Post.Username,
+			r.Post.Datetime.Format(time.RFC3339),
+		),
+	)
 	if err != nil {
 		return &ReactResponse{
 			Success: false,
 		}, err
 	}
 
-	_, err = c.db.ExecStatement(c.db.BuildQuery(notifyQuery, r.Post.Username, r.Reaction, r.Username, r.Reacttime.Format(time.RFC3339)))
+	_, err = c.db.ExecStatement(
+		c.db.BuildQuery(
+			reactQuery,
+			r.Post.Username,
+			r.Post.Datetime.Format(time.RFC3339),
+			r.Username,
+			r.Reacttime.Format(time.RFC3339),
+			r.Reaction,
+		),
+	)
+	if err != nil {
+		return &ReactResponse{
+			Success: false,
+		}, err
+	}
+
+	_, err = c.db.ExecStatement(
+		c.db.BuildQuery(
+			notifyQuery,
+			r.Post.Username,
+			r.Reaction,
+			r.Username,
+			r.Reacttime.Format(time.RFC3339),
+		),
+	)
 	if err != nil {
 		return &ReactResponse{
 			Success: false,
@@ -66,10 +99,27 @@ func (c *ReactHandler) Process(ctx context.Context, request endpoint.Request) (e
 	}, nil
 }
 
-const reactQuery = `
+const postQuery = `
 UPDATE post
 SET %s = %s + 1
 WHERE username = '%s' AND datetime = '%s';
+`
+
+const reactQuery = `
+INSERT INTO reaction (
+	username,
+	posttime,
+	connection,
+	datetime,
+	reaction
+)
+VALUES (
+	'%s',
+	'%s',
+	'%s',
+	'%s',
+	'%s'
+);
 `
 
 const notifyQuery = `

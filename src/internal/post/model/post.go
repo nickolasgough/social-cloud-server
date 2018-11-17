@@ -11,6 +11,8 @@ type Post struct {
 	Imageurl string    `json:"imageurl"`
 	Likes    int       `json:"likes"`
 	Dislikes int       `json:"dislikes"`
+	Liked    bool      `json:"liked"`
+	Disliked bool      `json:"disliked"`
 	Datetime time.Time `json:"datetime"`
 }
 
@@ -31,8 +33,23 @@ CREATE TABLE post (
 	PRIMARY KEY (username, datetime),
 	FOREIGN KEY (username) references profile (username)
 );
+
+CREATE TABLE reaction (
+	username VARCHAR(250) NOT NULL,
+	posttime TIMESTAMP NOT NULL,
+	connection VARCHAR(250) NOT NULL,
+	datetime TIMESTAMP NOT NULL,
+	reaction VARCHAR(250) NOT NULL,
+
+	PRIMARY KEY (username, posttime, connection, datetime, reaction),
+	FOREIGN KEY (username) references profile (username),
+	FOREIGN KEY (connection) references profile (username),
+	FOREIGN KEY (username, posttime) references post (username, datetime)
+);
 `
 
 const ModelDropQuery = `
+DROP TABLE reaction;
+
 DROP TABLE post;
 `

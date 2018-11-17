@@ -49,7 +49,18 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	if limit == "" {
 		limit = "25"
 	}
-	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, r.Feedname, offset, limit))
+
+	results, err := c.db.ExecQuery(
+		c.db.BuildQuery(
+			listQuery,
+			r.Username,
+			r.Username,
+			r.Username,
+			r.Feedname,
+			offset,
+			limit,
+		),
+	)
 	if err != nil {
 		return &ListResponse{
 			Posts: nil,
@@ -61,7 +72,18 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var avator model.Avatar
 	var datetime string
 	for results.Next() {
-		err = results.Scan(&post.Username, &avator.Displayname, &avator.Imageurl, &post.Post, &post.Imageurl, &post.Likes, &post.Dislikes, &datetime)
+		err = results.Scan(
+			&post.Username,
+			&avator.Displayname,
+			&avator.Imageurl,
+			&post.Post,
+			&post.Imageurl,
+			&post.Likes,
+			&post.Dislikes,
+			&post.Liked,
+			&post.Disliked,
+			&datetime,
+		)
 		if err != nil {
 			return &ListResponse{
 				Posts: nil,
@@ -98,14 +120,32 @@ SELECT
 	END,
 	po.likes,
 	po.dislikes,
+	CASE
+		WHEN (
+			SELECT
+				COUNT(r.connection)
+			FROM reaction r
+			WHERE r.username = po.username AND r.posttime = po.datetime AND r.connection = '%s' AND r.reaction = 'liked'
+		) > 0 THEN TRUE
+		ELSE FALSE
+	END,
+	CASE
+		WHEN (
+			SELECT
+				COUNT(r.connection)
+			FROM reaction r
+			WHERE r.username = po.username AND r.posttime = po.datetime AND r.connection = '%s' AND r.reaction = 'disliked'
+		) > 0 THEN TRUE
+		ELSE FALSE
+	END,
 	po.datetime
 FROM post po
 JOIN profile pr ON pr.username = po.username
 WHERE po.username IN (
 	SELECT
 		DISTINCT connection
-	FROM feed
-	WHERE username = '%s' AND feedname = '%s'
+	FROM feed f
+	WHERE f.username = '%s' AND f.feedname = '%s'
 )
 OFFSET %s
 LIMIT %s;
