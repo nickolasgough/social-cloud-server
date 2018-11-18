@@ -89,6 +89,7 @@ SELECT
 	datetime
 FROM notification
 WHERE username = '%s' AND dismissed = false
+ORDER BY datetime DESC
 OFFSET %s
 LIMIT %s;
 `

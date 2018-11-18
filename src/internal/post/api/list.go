@@ -147,6 +147,7 @@ WHERE po.username IN (
 	FROM feed f
 	WHERE f.username = '%s' AND f.feedname = '%s'
 )
+ORDER BY po.datetime DESC
 OFFSET %s
 LIMIT %s;
 `

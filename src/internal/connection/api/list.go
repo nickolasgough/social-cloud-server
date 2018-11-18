@@ -89,6 +89,7 @@ SELECT
 FROM connection c
 JOIN profile p ON p.username = c.connection
 WHERE c.username = '%s'
+ORDER BY c.username DESC
 OFFSET %s
-LIMIT %s
+LIMIT %s;
 `

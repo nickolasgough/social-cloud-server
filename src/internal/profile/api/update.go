@@ -7,6 +7,7 @@ import (
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/util"
+	"fmt"
 )
 
 type UpdateHandler struct {
@@ -41,26 +42,42 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		return nil, errors.New("error: received a request that is not a UpdateRequest")
 	}
 
-	contentType, imagefile, err := util.DecodeImageFile(r.Filename, r.Imagefile)
-	if err != nil {
-		return &UpdateResponse{
-			Imageurl: "",
-		}, err
+	var imageurl string
+	if r.Imagefile != nil && len(r.Imagefile) > 0 {
+		contentType, imagefile, err := util.DecodeImageFile(r.Filename, r.Imagefile)
+		if err != nil {
+			return &UpdateResponse{
+				Displayname: "",
+				Imageurl: "",
+			}, err
+		}
+
+		imageurl, err = c.db.UploadImage(ctx, r.Username, r.Filename, contentType, imagefile)
+		if err != nil {
+			return &UpdateResponse{
+				Displayname: "",
+				Imageurl: "",
+			}, err
+		}
 	}
 
-	imageurl, err := c.db.UploadImage(ctx, r.Filename, contentType, imagefile)
-	if err != nil {
-		return &UpdateResponse{
-			Imageurl: "",
-		}, err
+	var newurl string
+	if imageurl != "" {
+		newurl = fmt.Sprintf("'%s'", imageurl)
+	} else {
+		newurl = "NULL"
 	}
 
-	_, err = c.db.ExecStatement(c.db.BuildQuery(updateQuery, r.Displayname, imageurl, r.Username))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(updateQuery, r.Displayname, newurl, r.Username))
 	if err != nil {
 		return UpdateResponse{
 			Displayname: "",
 			Imageurl: "",
 		}, err
+	}
+
+	if imageurl == "NULL" {
+		imageurl = ""
 	}
 
 	return &UpdateResponse{
@@ -71,6 +88,6 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 
 const updateQuery = `
 UPDATE profile
-SET displayname = '%s', imageurl = '%s'
+SET displayname = '%s', imageurl = %s
 WHERE username = '%s'
 `

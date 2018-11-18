@@ -106,8 +106,8 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 	return db.db.Query(query)
 }
 
-func (db *Database) UploadImage(ctx context.Context, filename string, contentType string, imagefile image.Image) (string, error) {
-	object := db.bt.Object(filename)
+func (db *Database) UploadImage(ctx context.Context, username string, filename string, contentType string, imagefile image.Image) (string, error) {
+	object := db.bt.Object(fmt.Sprintf("%s-%s", username, filename))
 	writer := object.NewWriter(ctx)
 	writer.ContentType = contentType
 

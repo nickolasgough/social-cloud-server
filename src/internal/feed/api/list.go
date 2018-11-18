@@ -109,6 +109,7 @@ SELECT
 	datetime
 FROM feed
 WHERE username = '%s'
+ORDER BY feedname ASC
 OFFSET %s
 LIMIT %s;
 `
