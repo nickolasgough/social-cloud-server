@@ -6,11 +6,12 @@ import (
 
 
 type Notification struct {
-	Username  string    `json:"username"`
-	Type      string    `json:"type"`
-	Sender    string    `json:"sender"`
-	Dismissed bool      `json:"dismissed"`
-	Datetime  time.Time `json:"datetime"`
+	Username    string    `json:"username"`
+	Type        string    `json:"type"`
+	Sender      string    `json:"sender"`
+	Displayname string    `json:"displayname"`
+	Dismissed   bool      `json:"dismissed"`
+	Datetime    time.Time `json:"datetime"`
 }
 
 const ModelCreateQuery = `

@@ -48,7 +48,15 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	if limit == "" {
 		limit = "10"
 	}
-	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, offset, limit))
+
+	results, err := c.db.ExecQuery(
+		c.db.BuildQuery(
+			listQuery,
+			r.Username,
+			offset,
+			limit,
+		),
+	)
 	if err != nil {
 		return &ListResponse{
 			Notifications: nil,
@@ -59,7 +67,14 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var notification model.Notification
 	var datetime string
 	for results.Next() {
-		err = results.Scan(&notification.Username, &notification.Type, &notification.Sender, &notification.Dismissed, &datetime)
+		err = results.Scan(
+			&notification.Username,
+			&notification.Type,
+			&notification.Sender,
+			&notification.Displayname,
+			&notification.Dismissed,
+			&datetime,
+		)
 		if err != nil {
 			return &ListResponse{
 				Notifications: nil,
@@ -82,14 +97,16 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 
 const listQuery = `
 SELECT
-	username,
-	type,
-	sender,
-	dismissed,
-	datetime
-FROM notification
-WHERE username = '%s' AND dismissed = false
-ORDER BY datetime DESC
+	n.username,
+	n.type,
+	n.sender,
+	p.displayname,
+	n.dismissed,
+	n.datetime
+FROM notification n
+JOIN profile p ON p.username = n.sender
+WHERE n.username = '%s' AND n.dismissed = false
+ORDER BY n.datetime DESC
 OFFSET %s
 LIMIT %s;
 `
