@@ -28,7 +28,7 @@ const (
 
 	projectID = "531719510691"
 	bucketName = "social-cloud-1540055012833.appspot.com"
-	credentialsPath = "/Users/nickolas-gough/Projects/go/src/social-cloud-server/src/key/social-cloud-69d9b56a1450.json"
+	credentialsPath = "/home/nickolas_v_gough/projects/go/src/social-cloud-server/src/key/social-cloud-69d9b56a1450.json"
 )
 
 type Database struct {
