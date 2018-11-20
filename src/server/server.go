@@ -6,6 +6,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
+	"net"
 )
 
 type Server struct {
@@ -31,6 +32,14 @@ func (s *Server) RegisterHandler(route string, handler endpoint.Handler) {
 }
 
 func (s *Server) ListenAndServe() {
+	addrs, _ := net.InterfaceAddrs()
+	for _, addr := range addrs {
+		switch a := addr.(type) {
+			case *net.IPNet:
+				fmt.Printf("%s\n", a.IP.String())
+		}
+
+	}
 	ip := "10.0.0.165"
 	port := "8080"
 	address := fmt.Sprintf("%s:%s", ip, port)
