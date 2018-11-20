@@ -41,8 +41,8 @@ func NewDatabase() *Database {
 }
 
 func (db *Database) ConnectDatabase() error {
-	psqlInfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-							host, port, user, password, dbname)
+	psqlInfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
+							host, user, password, dbname)
 
 	var err error
 	db.db, err = sql.Open("postgres", psqlInfo)
