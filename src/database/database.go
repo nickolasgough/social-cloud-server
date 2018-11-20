@@ -20,11 +20,11 @@ import (
 )
 
 const (
-	host = "localhost"
+	host = "35.202.106.171"
 	port = 5432
 	user = "postgres"
 	password = "Nevergiveup1"
-	dbname = "socialclouddb"
+	dbname = "postgres"
 
 	projectID = "531719510691"
 	bucketName = "social-cloud-1540055012833.appspot.com"
