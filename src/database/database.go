@@ -99,13 +99,13 @@ func (db *Database) BuildQuery(format string, args ...interface{}) string {
 }
 
 func (db *Database) ExecStatement(query string) (sql.Result, error) {
-	//db.begin()
+	db.begin()
 	result, err := db.db.Exec(query)
-	//if err != nil {
-	//	db.rollback()
-	//} else {
-	//	db.commit()
-	//}
+	if err != nil {
+		db.rollback()
+	} else {
+		db.commit()
+	}
 	return result, err
 }
 
@@ -121,18 +121,24 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 }
 
 func (db *Database) begin() {
-	db.db.Exec("BEGIN;")
+	if _, err := db.db.Exec("BEGIN;"); err != nil {
+		fmt.Printf("Begin errored with: %s\n", err.Error())
+	}
 	fmt.Println("Beginning transaction")
 }
 
 func (db *Database) commit() {
 	fmt.Println("Committing transaction")
-	db.db.Exec("COMMIT;")
+	if _, err := db.db.Exec("COMMIT;"); err != nil {
+		fmt.Printf("Commit errored with: %s\n", err.Error())
+	}
 }
 
 func (db *Database) rollback() {
 	fmt.Println("Restarting transaction")
-	db.db.Exec("ROLLBACK;")
+	if _, err := db.db.Exec("ROLLBACK;"); err != nil {
+		fmt.Printf("Rollback errored with: %s\n", err.Error())
+	}
 }
 
 func (db *Database) UploadImage(ctx context.Context, username string, filename string, contentType string, imagefile image.Image) (string, error) {

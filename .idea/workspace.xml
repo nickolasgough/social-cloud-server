@@ -17,8 +17,8 @@
       <file leaf-file-name="database.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/database/database.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="228">
-              <caret line="102" column="16" lean-forward="true" selection-start-line="102" selection-start-column="16" selection-end-line="102" selection-end-column="16" />
+            <state relative-caret-position="338">
+              <caret line="139" column="28" lean-forward="false" selection-start-line="139" selection-start-column="28" selection-end-line="139" selection-end-column="28" />
               <folding />
             </state>
           </provider>
@@ -674,8 +674,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/database/database.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="102" column="16" lean-forward="true" selection-start-line="102" selection-start-column="16" selection-end-line="102" selection-end-column="16" />
+        <state relative-caret-position="338">
+          <caret line="139" column="28" lean-forward="false" selection-start-line="139" selection-start-column="28" selection-end-line="139" selection-end-column="28" />
           <folding />
         </state>
       </provider>
