@@ -21,10 +21,10 @@ var models = []model{
 }
 
 func AcquireLocks(lockIds []string) {
-	fmt.Printf("Acquiring locks for %+v\n", lockIds)
 	for _, i := range lockIds {
 		acquireLock(i)
 	}
+	fmt.Printf("Acquiring locks for %+v\n", lockIds)
 }
 
 func acquireLock(lockId string) {

@@ -121,8 +121,8 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 }
 
 func (db *Database) begin() {
-	fmt.Println("Beginning transaction")
 	db.db.Exec("BEGIN;")
+	fmt.Println("Beginning transaction")
 }
 
 func (db *Database) commit() {
