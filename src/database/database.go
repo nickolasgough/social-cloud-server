@@ -99,11 +99,37 @@ func (db *Database) BuildQuery(format string, args ...interface{}) string {
 }
 
 func (db *Database) ExecStatement(query string) (sql.Result, error) {
-	return db.db.Exec(query)
+	db.begin()
+	result, err := db.db.Exec(query)
+	if err != nil {
+		db.rollback()
+	} else {
+		db.commit()
+	}
+	return result, err
 }
 
 func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
-	return db.db.Query(query)
+	db.begin()
+	rows, err := db.db.Query(query)
+	if err != nil {
+		db.rollback()
+	} else {
+		db.commit()
+	}
+	return rows, err
+}
+
+func (db *Database) begin() {
+	db.db.Exec("BEGIN;")
+}
+
+func (db *Database) commit() {
+	db.db.Exec("COMMIT;")
+}
+
+func (db *Database) rollback() {
+	db.db.Exec("ROLLBACK;")
 }
 
 func (db *Database) UploadImage(ctx context.Context, username string, filename string, contentType string, imagefile image.Image) (string, error) {

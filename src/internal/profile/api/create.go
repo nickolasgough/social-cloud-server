@@ -7,6 +7,7 @@ import (
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"time"
+	"social-cloud-server/src/internal/util"
 )
 
 type CreateHandler struct {
@@ -39,6 +40,10 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 	if !ok {
 		return nil, errors.New("error: received a request that is not a CreateRequest")
 	}
+
+	lockIds := []string{"profile"}
+	util.AcquireLocks(lockIds)
+	defer util.ReleaseLocks(lockIds)
 
 	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Username, r.Password, r.DisplayName, r.Datetime.Format(time.RFC3339)))
 	if err != nil {

@@ -14,6 +14,10 @@ type Listener struct {
 }
 
 func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
+	go l.handle(rw, r)
+}
+
+func (l *Listener) handle(rw http.ResponseWriter, r *http.Request) {
 	applyHeaders(&rw)
 	defer r.Body.Close()
 
@@ -22,15 +26,15 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	var body []byte
 	var err error
 	switch r.Method {
-		case "GET":
-			body, err = parseUrlParameters(r.URL.RawQuery)
-			break
-		case "POST":
-			body, err = ioutil.ReadAll(r.Body)
-			break
+	case "GET":
+		body, err = parseUrlParameters(r.URL.RawQuery)
+		break
+	case "POST":
+		body, err = ioutil.ReadAll(r.Body)
+		break
 	}
 	if err != nil {
-		l.Error(rw, err)
+		l.error(rw, err)
 		return
 	}
 	fmt.Printf("Received request body: %s\n", body)
@@ -38,7 +42,7 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	request := l.Handler.Request()
 	err = json.Unmarshal(body, request)
 	if err != nil {
-		l.Error(rw, err)
+		l.error(rw, err)
 		fmt.Printf("Unmarshal errored with: %s\n", err.Error())
 		return
 	}
@@ -46,7 +50,7 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	rawResponse, err := l.Handler.Process(context.Background(), request)
 	if err != nil {
-		l.Error(rw, err)
+		l.error(rw, err)
 		fmt.Printf("Process errored with: %s\n", err.Error())
 		return
 	}
@@ -54,7 +58,7 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 
 	jsonResponse, err := json.Marshal(rawResponse)
 	if err != nil {
-		l.Error(rw, err)
+		l.error(rw, err)
 		fmt.Printf("Marshal errored with: %s\n", err.Error())
 		return
 	}
@@ -63,7 +67,7 @@ func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(rw, "%s", jsonResponse)
 }
 
-func (l *Listener) Error(rw http.ResponseWriter, err error) {
+func (l *Listener) error(rw http.ResponseWriter, err error) {
 	rw.WriteHeader(http.StatusInternalServerError)
 	fmt.Fprintf(rw, "Error: %s", err.Error())
 }

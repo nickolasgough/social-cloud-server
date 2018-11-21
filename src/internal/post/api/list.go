@@ -8,6 +8,7 @@ import (
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/post/model"
+	"social-cloud-server/src/internal/util"
 )
 
 type ListHandler struct {
@@ -40,6 +41,10 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	if !ok {
 		return nil, errors.New("error: received a request that is not a ListRequest")
 	}
+
+	lockIds := []string{"post", "profile", "feed"}
+	util.AcquireLocks(lockIds)
+	defer util.ReleaseLocks(lockIds)
 
 	offset := r.Cursor
 	if offset == "" {

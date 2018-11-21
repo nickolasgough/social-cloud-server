@@ -42,6 +42,10 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		return nil, errors.New("error: received a request that is not a UpdateRequest")
 	}
 
+	lockIds := []string{"profile"}
+	util.AcquireLocks(lockIds)
+	defer util.ReleaseLocks(lockIds)
+
 	var imageurl string
 	if r.Imagefile != nil && len(r.Imagefile) > 0 {
 		contentType, imagefile, err := util.DecodeImageFile(r.Filename, r.Imagefile)

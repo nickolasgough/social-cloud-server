@@ -8,6 +8,7 @@ import (
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/post/model"
+	"social-cloud-server/src/internal/util"
 )
 
 type ReactHandler struct {
@@ -40,6 +41,10 @@ func (c *ReactHandler) Process(ctx context.Context, request endpoint.Request) (e
 	if !ok {
 		return nil, errors.New("error: received a request that is not a ReactRequest")
 	}
+
+	lockIds := []string{"post", "reaction", "notification"}
+	util.AcquireLocks(lockIds)
+	defer util.ReleaseLocks(lockIds)
 
 	var field string
 	if r.Reaction == "liked" {

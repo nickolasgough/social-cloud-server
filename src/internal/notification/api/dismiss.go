@@ -7,6 +7,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
+	"social-cloud-server/src/internal/util"
 )
 
 type DismissHandler struct {
@@ -38,6 +39,10 @@ func (c *DismissHandler) Process(ctx context.Context, request endpoint.Request) 
 	if !ok {
 		return nil, errors.New("error: received a request that is not a DismissRequest")
 	}
+
+	lockIds := []string{"notification"}
+	util.AcquireLocks(lockIds)
+	defer util.ReleaseLocks(lockIds)
 
 	_, err := c.db.ExecStatement(c.db.BuildQuery(dismissQuery, r.Username, r.Sender, r.Datetime.Format(time.RFC3339)))
 	if err != nil {

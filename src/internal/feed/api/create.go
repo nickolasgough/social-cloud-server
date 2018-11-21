@@ -8,6 +8,7 @@ import (
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/feed/model"
+	"social-cloud-server/src/internal/util"
 )
 
 type CreateHandler struct {
@@ -40,6 +41,10 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 	if !ok {
 		return nil, errors.New("error: received a request that is not a CreateRequest")
 	}
+
+	lockIds := []string{"feed"}
+	util.AcquireLocks(lockIds)
+	defer util.ReleaseLocks(lockIds)
 
 	for _, member := range r.Members {
 		_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Username, r.Feedname, member.Connection, member.Datetime.Format(time.RFC3339), r.Datetime.Format(time.RFC3339)))

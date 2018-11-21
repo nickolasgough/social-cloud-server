@@ -7,6 +7,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
+	"internal/util"
 )
 
 type LoginHandler struct {
@@ -40,6 +41,10 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 	if !ok {
 		return nil, errors.New("error: received a request that is not a LoginRequest")
 	}
+
+	lockIds := []string{"profile"}
+	util.AcquireLocks(lockIds)
+	defer util.ReleaseLocks(lockIds)
 
 	result, err := c.db.ExecQuery(c.db.BuildQuery(loginQuery, r.Username, r.Password))
 	if err != nil {
