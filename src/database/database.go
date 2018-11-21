@@ -99,46 +99,35 @@ func (db *Database) BuildQuery(format string, args ...interface{}) string {
 }
 
 func (db *Database) ExecStatement(query string) (sql.Result, error) {
-	db.begin()
+	tx, err := db.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+
 	result, err := db.db.Exec(query)
 	if err != nil {
-		db.rollback()
-	} else {
-		db.commit()
+		tx.Rollback()
+		return nil, err
 	}
+
+	tx.Commit()
 	return result, err
 }
 
 func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
-	db.begin()
+	tx, err := db.db.Begin()
+	if err != nil {
+		return nil, err
+	}
+
 	rows, err := db.db.Query(query)
 	if err != nil {
-		db.rollback()
-	} else {
-		db.commit()
+		tx.Rollback()
+		return nil, err
 	}
+
+	tx.Commit()
 	return rows, err
-}
-
-func (db *Database) begin() {
-	if _, err := db.db.Exec("BEGIN;"); err != nil {
-		fmt.Printf("Begin errored with: %s\n", err.Error())
-	}
-	fmt.Println("Beginning transaction")
-}
-
-func (db *Database) commit() {
-	fmt.Println("Committing transaction")
-	if _, err := db.db.Exec("COMMIT;"); err != nil {
-		fmt.Printf("Commit errored with: %s\n", err.Error())
-	}
-}
-
-func (db *Database) rollback() {
-	fmt.Println("Restarting transaction")
-	if _, err := db.db.Exec("ROLLBACK;"); err != nil {
-		fmt.Printf("Rollback errored with: %s\n", err.Error())
-	}
 }
 
 func (db *Database) UploadImage(ctx context.Context, username string, filename string, contentType string, imagefile image.Image) (string, error) {
