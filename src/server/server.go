@@ -31,8 +31,8 @@ func (s *Server) RegisterHandler(route string, handler endpoint.Handler) {
 }
 
 func (s *Server) ListenAndServe() {
-	ip := "10.128.0.3"
-	port := "8080"
+	ip := "35.184.170.191"
+	port := "80"
 	address := fmt.Sprintf("%s:%s", ip, port)
 
 	fmt.Printf("Server listening on %s at port %s...\n", ip, port)
