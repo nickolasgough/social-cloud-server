@@ -7,7 +7,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
-	"internal/util"
+	"social-cloud-server/src/internal/util"
 )
 
 type LoginHandler struct {
