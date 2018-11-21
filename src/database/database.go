@@ -71,11 +71,11 @@ func (db *Database) ConnectBucket(ctx context.Context) error {
 
 func (db *Database) BuildModels() error {
 	modelQueries := []string{
-		//postModel.ModelDropQuery,
-		//feedModel.ModelDropQuery,
-		//connectionModel.ModelDropQuery,
-		//notificationModel.ModelDropQuery,
-		//profileModel.ModelDropQuery,
+		postModel.ModelDropQuery,
+		feedModel.ModelDropQuery,
+		connectionModel.ModelDropQuery,
+		notificationModel.ModelDropQuery,
+		profileModel.ModelDropQuery,
 
 		profileModel.ModelCreateQuery,
 		notificationModel.ModelCreateQuery,
