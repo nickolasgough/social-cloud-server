@@ -1,6 +1,9 @@
 package util
 
-import "sync"
+import (
+	"sync"
+	"fmt"
+)
 
 
 type model struct {
@@ -18,6 +21,7 @@ var models = []model{
 }
 
 func AcquireLocks(lockIds []string) {
+	fmt.Printf("Acquiring locks for %+v\n", lockIds)
 	for _, i := range lockIds {
 		acquireLock(i)
 	}
@@ -34,6 +38,7 @@ func acquireLock(lockId string) {
 }
 
 func ReleaseLocks(lockIds []string) {
+	fmt.Printf("Releasing locks for %+v\n", lockIds)
 	for _, i := range lockIds {
 		releaseLock(i)
 	}

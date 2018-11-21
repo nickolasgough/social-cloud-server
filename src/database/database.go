@@ -121,14 +121,17 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 }
 
 func (db *Database) begin() {
+	fmt.Println("Beginning transaction")
 	db.db.Exec("BEGIN;")
 }
 
 func (db *Database) commit() {
+	fmt.Println("Committing transaction")
 	db.db.Exec("COMMIT;")
 }
 
 func (db *Database) rollback() {
+	fmt.Println("Rolling back transaction")
 	db.db.Exec("ROLLBACK;")
 }
 
