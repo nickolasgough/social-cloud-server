@@ -99,13 +99,13 @@ func (db *Database) BuildQuery(format string, args ...interface{}) string {
 }
 
 func (db *Database) ExecStatement(query string) (sql.Result, error) {
-	db.begin()
+	//db.begin()
 	result, err := db.db.Exec(query)
-	if err != nil {
-		db.rollback()
-	} else {
-		db.commit()
-	}
+	//if err != nil {
+	//	db.rollback()
+	//} else {
+	//	db.commit()
+	//}
 	return result, err
 }
 
@@ -131,7 +131,7 @@ func (db *Database) commit() {
 }
 
 func (db *Database) rollback() {
-	fmt.Println("Rolling back transaction")
+	fmt.Println("Restarting transaction")
 	db.db.Exec("ROLLBACK;")
 }
 
