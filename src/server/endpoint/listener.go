@@ -14,10 +14,6 @@ type Listener struct {
 }
 
 func (l *Listener) ServeHTTP(rw http.ResponseWriter, r *http.Request) {
-	go l.handle(rw, r)
-}
-
-func (l *Listener) handle(rw http.ResponseWriter, r *http.Request) {
 	applyHeaders(&rw)
 	defer r.Body.Close()
 
@@ -62,9 +58,14 @@ func (l *Listener) handle(rw http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Marshal errored with: %s\n", err.Error())
 		return
 	}
-	fmt.Printf("Responding with: %s\n", jsonResponse)
 
+	l.success(rw, string(jsonResponse))
 	fmt.Fprintf(rw, "%s", jsonResponse)
+}
+
+func (l *Listener) success(rw http.ResponseWriter, response string) {
+	rw.WriteHeader(http.StatusOK)
+	fmt.Printf("Success: %s\n", response)
 }
 
 func (l *Listener) error(rw http.ResponseWriter, err error) {
@@ -74,7 +75,6 @@ func (l *Listener) error(rw http.ResponseWriter, err error) {
 
 func applyHeaders(rw *http.ResponseWriter) {
 	(*rw).Header().Set("Content-Type", "application/json")
-	(*rw).Header().Set("Access-Control-Allow-Origin", "http://localhost:4200")
 	(*rw).Header().Set("Access-Control-Allow-Methods", "POST, GET")
 }
 
