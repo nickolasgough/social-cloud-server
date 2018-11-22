@@ -46,13 +46,7 @@ func (c *GoogleHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	_, err := c.db.ExecQuery(c.db.BuildQuery(googleQuery, r.Email, r.DisplayName, r.Imageurl, r.Datetime.Format(time.RFC3339)))
-	if err != nil {
-		return &GoogleResponse{
-			Displayname: "",
-			Imageurl:    "",
-		}, err
-	}
+	c.db.ExecQuery(c.db.BuildQuery(googleQuery, r.Email, r.DisplayName, r.Imageurl, r.Datetime.Format(time.RFC3339)))
 
 	return &GoogleResponse{
 		Displayname: r.DisplayName,
