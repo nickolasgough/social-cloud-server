@@ -50,6 +50,7 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 	if err != nil {
 		return &LoginResponse{
 			Displayname: "",
+			Imageurl:    "",
 		}, err
 	}
 
