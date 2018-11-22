@@ -29,6 +29,7 @@ type GoogleRequest struct {
 
 type GoogleResponse struct {
 	Displayname string `json:"displayname"`
+	Password    string `json:"password"`
 	Imageurl    string `json:"imageurl"`
 }
 
@@ -46,15 +47,33 @@ func (c *GoogleHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	c.db.ExecQuery(c.db.BuildQuery(googleQuery, r.Email, r.DisplayName, r.Imageurl, r.Datetime.Format(time.RFC3339)))
+	c.db.ExecQuery(c.db.BuildQuery(googleCreateQuery, r.Email, r.DisplayName, r.Imageurl, r.Datetime.Format(time.RFC3339)))
 
-	return &GoogleResponse{
-		Displayname: r.DisplayName,
-		Imageurl:    r.Imageurl,
-	}, nil
+	result, err := c.db.ExecQuery(c.db.BuildQuery(googleSignInQuery, r.Email))
+	if err != nil {
+		return &GoogleResponse{
+			Displayname: "",
+			Password:    "",
+			Imageurl:    "",
+		}, err
+	}
+
+	var gr GoogleResponse
+	if result.Next() {
+		err = result.Scan(&gr.Displayname, &gr.Password, &gr.Imageurl)
+		if err != nil {
+			return &GoogleResponse{
+				Displayname: "",
+				Password: "",
+				Imageurl: "",
+			}, err
+		}
+	}
+
+	return &gr, nil
 }
 
-const googleQuery = `
+const googleCreateQuery = `
 INSERT INTO profile (
 	email,
 	password,
@@ -69,4 +88,16 @@ VALUES (
 	'%s',
 	'%s'
 );
+`
+
+const googleSignInQuery = `
+SELECT
+	displayname,
+	password,
+	CASE 
+		WHEN imageurl IS NULL THEN ''
+		ELSE imageurl
+	END
+FROM profile
+WHERE email = '%s';
 `

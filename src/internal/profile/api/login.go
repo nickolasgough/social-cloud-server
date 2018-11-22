@@ -29,6 +29,7 @@ type LoginRequest struct {
 
 type LoginResponse struct {
 	Displayname string `json:"displayname"`
+	Password    string `json:"password"`
 	Imageurl    string `json:"imageurl"`
 }
 
@@ -50,16 +51,18 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 	if err != nil {
 		return &LoginResponse{
 			Displayname: "",
+			Password:    "",
 			Imageurl:    "",
 		}, err
 	}
 
 	var lr LoginResponse
 	if result.Next() {
-		err = result.Scan(&lr.Displayname, &lr.Imageurl)
+		err = result.Scan(&lr.Displayname, &lr.Password, &lr.Imageurl)
 		if err != nil {
 			return &LoginResponse{
 				Displayname: "",
+				Password:    "",
 				Imageurl:    "",
 			}, err
 		}
@@ -71,6 +74,7 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 const loginQuery = `
 SELECT
 	displayname,
+	password,
 	CASE 
 		WHEN imageurl IS NULL THEN ''
 		ELSE imageurl

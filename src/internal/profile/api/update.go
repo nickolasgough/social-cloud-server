@@ -22,6 +22,7 @@ func NewUpdateHandler(db *database.Database) *UpdateHandler {
 
 type UpdateRequest struct {
 	Email       string `json:"email"`
+	Password    string `json:"password"`
 	Displayname string `json:"displayname"`
 	Filename    string `json:"filename"`
 	Imagefile   []byte `json:"imagefile"`
@@ -29,6 +30,7 @@ type UpdateRequest struct {
 
 type UpdateResponse struct {
 	Displayname string `json:"displayname"`
+	Password    string `json:"password"`
 	Imageurl    string `json:"imageurl"`
 }
 
@@ -52,6 +54,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		if err != nil {
 			return &UpdateResponse{
 				Displayname: "",
+				Password:    "",
 				Imageurl:    "",
 			}, err
 		}
@@ -60,6 +63,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		if err != nil {
 			return &UpdateResponse{
 				Displayname: "",
+				Password:    "",
 				Imageurl:    "",
 			}, err
 		}
@@ -72,10 +76,11 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		newurl = "NULL"
 	}
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(updateQuery, r.Displayname, newurl, r.Email))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(updateQuery, r.Displayname, r.Password, newurl, r.Email))
 	if err != nil {
 		return UpdateResponse{
 			Displayname: "",
+			Password:    "",
 			Imageurl:    "",
 		}, err
 	}
@@ -86,12 +91,13 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 
 	return &UpdateResponse{
 		Displayname: r.Displayname,
+		Password:    r.Password,
 		Imageurl:    imageurl,
 	}, nil
 }
 
 const updateQuery = `
 UPDATE profile
-SET displayname = '%s', imageurl = %s
+SET displayname = '%s', password = '%s', imageurl = %s
 WHERE email = '%s'
 `
