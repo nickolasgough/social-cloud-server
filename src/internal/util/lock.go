@@ -47,7 +47,7 @@ func ReleaseLocks(lockIds []string) {
 func releaseLock(lockId string) {
 	for _, m := range models {
 		if lockId == m.id {
-			m.lock.Lock()
+			m.lock.Unlock()
 			return
 		}
 	}
