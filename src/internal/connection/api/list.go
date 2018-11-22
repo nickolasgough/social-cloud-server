@@ -22,9 +22,9 @@ func NewListHandler(db *database.Database) *ListHandler {
 }
 
 type ListRequest struct {
-	Username string `json:"username"`
-	Cursor   string `json:"cursor"`
-	Limit    string `json:"limit"`
+	Email  string `json:"email"`
+	Cursor string `json:"cursor"`
+	Limit  string `json:"limit"`
 }
 
 type ListResponse struct {
@@ -53,7 +53,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	if limit == "" {
 		limit = "10"
 	}
-	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, offset, limit))
+	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Email, offset, limit))
 	if err != nil {
 		return &ListResponse{
 			Connections: nil,
@@ -64,7 +64,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var connection model.Connection
 	var datetime string
 	for results.Next() {
-		err = results.Scan(&connection.Username, &connection.Connection, &connection.Displayname, &datetime)
+		err = results.Scan(&connection.Email, &connection.Connection, &connection.Displayname, &datetime)
 		if err != nil {
 			return &ListResponse{
 				Connections: nil,
@@ -87,14 +87,14 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 
 const listQuery = `
 SELECT
-	c.username,
+	c.email,
 	c.connection,
 	p.displayname,
 	c.datetime
 FROM connection c
-JOIN profile p ON p.username = c.connection
-WHERE c.username = '%s'
-ORDER BY c.username DESC
+JOIN profile p ON p.email = c.connection
+WHERE c.email = '%s'
+ORDER BY c.email DESC
 OFFSET %s
 LIMIT %s;
 `

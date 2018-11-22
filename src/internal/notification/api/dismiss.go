@@ -21,7 +21,7 @@ func NewDismissHandler(db *database.Database) *DismissHandler {
 }
 
 type DismissRequest struct {
-	Username string    `json:"username"`
+	Email    string    `json:"email"`
 	Sender   string    `json:"sender"`
 	Datetime time.Time `json:"datetime"`
 }
@@ -44,7 +44,7 @@ func (c *DismissHandler) Process(ctx context.Context, request endpoint.Request) 
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(dismissQuery, r.Username, r.Sender, r.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(dismissQuery, r.Email, r.Sender, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &DismissResponse{
 			Success: false,
@@ -59,5 +59,5 @@ func (c *DismissHandler) Process(ctx context.Context, request endpoint.Request) 
 const dismissQuery = `
 UPDATE notification
 SET dismissed = true
-WHERE username = '%s' AND sender = '%s' AND datetime = '%s'
+WHERE email = '%s' AND sender = '%s' AND datetime = '%s'
 `

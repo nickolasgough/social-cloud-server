@@ -4,9 +4,8 @@ import (
 	"time"
 )
 
-
 type Connection struct {
-	Username    string    `json:"username"`
+	Email       string    `json:"email"`
 	Connection  string    `json:"connection"`
 	Displayname string    `json:"displayname"`
 	Datetime    time.Time `json:"datetime"`
@@ -14,13 +13,13 @@ type Connection struct {
 
 const ModelCreateQuery = `
 CREATE TABLE connection (
-	username VARCHAR(250) NOT NULL,
+	email VARCHAR(250) NOT NULL,
 	connection VARCHAR(250) NOT NULL,
 	datetime TIMESTAMP NOT NULL,
 
-	PRIMARY KEY (username, datetime),
-	FOREIGN KEY (username) references profile (username),
-	FOREIGN KEY (connection) references profile (username)
+	PRIMARY KEY (email, datetime),
+	FOREIGN KEY (email) references profile (email),
+	FOREIGN KEY (connection) references profile (email)
 );
 `
 

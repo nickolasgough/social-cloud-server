@@ -130,8 +130,8 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 	return rows, err
 }
 
-func (db *Database) UploadImage(ctx context.Context, username string, filename string, contentType string, imagefile image.Image) (string, error) {
-	filename = fmt.Sprintf("%s-%s", username, filename)
+func (db *Database) UploadImage(ctx context.Context, email string, filename string, contentType string, imagefile image.Image) (string, error) {
+	filename = fmt.Sprintf("%s-%s", email, filename)
 
 	object := db.bt.Object(fmt.Sprintf("%s", filename))
 	writer := object.NewWriter(ctx)

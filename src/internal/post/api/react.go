@@ -22,7 +22,7 @@ func NewReactHandler(db *database.Database) *ReactHandler {
 }
 
 type ReactRequest struct {
-	Username  string     `json:"username"`
+	Email     string     `json:"email"`
 	Post      model.Post `json:"post"`
 	Reaction  string     `json:"reaction"`
 	Reacttime time.Time  `json:"reacttime"`
@@ -58,7 +58,7 @@ func (c *ReactHandler) Process(ctx context.Context, request endpoint.Request) (e
 			postQuery,
 			field,
 			field,
-			r.Post.Username,
+			r.Post.Email,
 			r.Post.Datetime.Format(time.RFC3339),
 		),
 	)
@@ -71,9 +71,9 @@ func (c *ReactHandler) Process(ctx context.Context, request endpoint.Request) (e
 	_, err = c.db.ExecStatement(
 		c.db.BuildQuery(
 			reactQuery,
-			r.Post.Username,
+			r.Post.Email,
 			r.Post.Datetime.Format(time.RFC3339),
-			r.Username,
+			r.Email,
 			r.Reacttime.Format(time.RFC3339),
 			r.Reaction,
 		),
@@ -87,9 +87,9 @@ func (c *ReactHandler) Process(ctx context.Context, request endpoint.Request) (e
 	_, err = c.db.ExecStatement(
 		c.db.BuildQuery(
 			notifyQuery,
-			r.Post.Username,
+			r.Post.Email,
 			r.Reaction,
-			r.Username,
+			r.Email,
 			r.Reacttime.Format(time.RFC3339),
 		),
 	)
@@ -107,12 +107,12 @@ func (c *ReactHandler) Process(ctx context.Context, request endpoint.Request) (e
 const postQuery = `
 UPDATE post
 SET %s = %s + 1
-WHERE username = '%s' AND datetime = '%s';
+WHERE email = '%s' AND datetime = '%s';
 `
 
 const reactQuery = `
 INSERT INTO reaction (
-	username,
+	email,
 	posttime,
 	connection,
 	datetime,
@@ -129,7 +129,7 @@ VALUES (
 
 const notifyQuery = `
 INSERT INTO notification (
-	username,
+	email,
 	type,
 	sender,
 	dismissed,

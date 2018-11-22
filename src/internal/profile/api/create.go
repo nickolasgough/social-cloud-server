@@ -21,7 +21,7 @@ func NewCreateHandler(db *database.Database) *CreateHandler {
 }
 
 type CreateRequest struct {
-	Username    string    `json:"username"`
+	Email       string    `json:"email"`
 	Password    string    `json:"password"`
 	DisplayName string    `json:"displayname"`
 	Datetime    time.Time `json:"datetime"`
@@ -45,7 +45,7 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Username, r.Password, r.DisplayName, r.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Email, r.Password, r.DisplayName, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &CreateResponse{
 			Success: false,
@@ -59,7 +59,7 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 
 const createQuery = `
 INSERT INTO profile (
-	username,
+	email,
 	password,
 	displayname,
 	imageurl,

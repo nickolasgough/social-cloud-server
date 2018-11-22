@@ -22,9 +22,9 @@ func NewListHandler(db *database.Database) *ListHandler {
 }
 
 type ListRequest struct {
-	Username string `json:"username"`
-	Cursor   string `json:"cursor"`
-	Limit    string `json:"limit"`
+	Email  string `json:"email"`
+	Cursor string `json:"cursor"`
+	Limit  string `json:"limit"`
 }
 
 type ListResponse struct {
@@ -57,7 +57,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	results, err := c.db.ExecQuery(
 		c.db.BuildQuery(
 			listQuery,
-			r.Username,
+			r.Email,
 			offset,
 			limit,
 		),
@@ -73,7 +73,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var datetime string
 	for results.Next() {
 		err = results.Scan(
-			&notification.Username,
+			&notification.Email,
 			&notification.Type,
 			&notification.Sender,
 			&notification.Displayname,
@@ -102,15 +102,15 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 
 const listQuery = `
 SELECT
-	n.username,
+	n.email,
 	n.type,
 	n.sender,
 	p.displayname,
 	n.dismissed,
 	n.datetime
 FROM notification n
-JOIN profile p ON p.username = n.sender
-WHERE n.username = '%s' AND n.dismissed = false
+JOIN profile p ON p.email = n.sender
+WHERE n.email = '%s' AND n.dismissed = false
 ORDER BY n.datetime DESC
 OFFSET %s
 LIMIT %s;

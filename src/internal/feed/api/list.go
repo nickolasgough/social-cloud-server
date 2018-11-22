@@ -22,9 +22,9 @@ func NewListHandler(db *database.Database) *ListHandler {
 }
 
 type ListRequest struct {
-	Username string `json:"username"`
-	Cursor   string `json:"cursor"`
-	Limit    string `json:"limit"`
+	Email  string `json:"email"`
+	Cursor string `json:"cursor"`
+	Limit  string `json:"limit"`
 }
 
 type ListResponse struct {
@@ -53,7 +53,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	if limit == "" {
 		limit = "10"
 	}
-	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Username, offset, limit))
+	results, err := c.db.ExecQuery(c.db.BuildQuery(listQuery, r.Email, offset, limit))
 	if err != nil {
 		return &ListResponse{
 			Feeds: nil,
@@ -67,7 +67,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var fdatetime string
 	var mdatetime string;
 	for results.Next() {
-		err = results.Scan(&feed.Username, &feed.Feedname, &member.Connection, &mdatetime, &fdatetime)
+		err = results.Scan(&feed.Email, &feed.Feedname, &member.Connection, &mdatetime, &fdatetime)
 		if err != nil {
 			return &ListResponse{
 				Feeds: nil,
@@ -88,7 +88,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 		}
 
 		temp = fmap[feed.Feedname]
-		temp.Username = feed.Username
+		temp.Email = feed.Email
 		temp.Feedname = feed.Feedname
 		temp.Datetime = feed.Datetime
 		temp.Members = append(temp.Members, member)
@@ -107,13 +107,13 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 
 const listQuery = `
 SELECT
-	username,
+	email,
 	feedname,
 	connection,
 	joined,
 	datetime
 FROM feed
-WHERE username = '%s'
+WHERE email = '%s'
 ORDER BY feedname ASC
 OFFSET %s
 LIMIT %s;

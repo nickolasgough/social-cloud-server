@@ -21,7 +21,7 @@ func NewAcceptHandler(db *database.Database) *AcceptHandler {
 }
 
 type AcceptRequest struct {
-	Username   string    `json:"username"`
+	Email      string    `json:"email"`
 	Connection string    `json:"connection"`
 	Datetime   time.Time `json:"datetime"`
 }
@@ -44,27 +44,27 @@ func (c *AcceptHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(acceptQuery, r.Username, r.Connection, r.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(acceptQuery, r.Email, r.Connection, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &AcceptResponse{
 			Success: false,
 		}, err
 	}
-	_, err = c.db.ExecStatement(c.db.BuildQuery(acceptQuery, r.Connection, r.Username, r.Datetime.Format(time.RFC3339)))
-	if err != nil {
-		return &AcceptResponse{
-			Success: false,
-		}, err
-	}
-
-	_, err = c.db.ExecStatement(c.db.BuildQuery(dismissQuery, r.Username, r.Connection))
+	_, err = c.db.ExecStatement(c.db.BuildQuery(acceptQuery, r.Connection, r.Email, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &AcceptResponse{
 			Success: false,
 		}, err
 	}
 
-	_, err = c.db.ExecStatement(c.db.BuildQuery(notifyQuery, r.Connection, r.Username, r.Datetime.Format(time.RFC3339)))
+	_, err = c.db.ExecStatement(c.db.BuildQuery(dismissQuery, r.Email, r.Connection))
+	if err != nil {
+		return &AcceptResponse{
+			Success: false,
+		}, err
+	}
+
+	_, err = c.db.ExecStatement(c.db.BuildQuery(notifyQuery, r.Connection, r.Email, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &AcceptResponse{
 			Success: false,
@@ -78,7 +78,7 @@ func (c *AcceptHandler) Process(ctx context.Context, request endpoint.Request) (
 
 const acceptQuery = `
 INSERT INTO connection (
-	username,
+	email,
 	connection,
 	datetime
 )
@@ -92,12 +92,12 @@ VALUES (
 const dismissQuery = `
 UPDATE notification
 SET dismissed = true
-WHERE username = '%s' AND sender = '%s' AND type = 'connection-request';
+WHERE email = '%s' AND sender = '%s' AND type = 'connection-request';
 `
 
 const notifyQuery = `
 INSERT INTO notification (
-	username,
+	email,
 	type,
 	sender,
 	dismissed,

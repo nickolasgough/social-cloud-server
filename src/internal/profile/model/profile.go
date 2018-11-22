@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Profile struct {
-	Username    string    `json:"username"`
+	Email       string    `json:"email"`
 	Password    string    `json:"password"`
 	Displayname string    `json:"displayname"`
 	Imageurl    string    `json:"imageurl"`
@@ -12,13 +12,13 @@ type Profile struct {
 
 const ModelCreateQuery = `
 CREATE TABLE profile (
-	username VARCHAR(250) NOT NULL,
+	email VARCHAR(250) NOT NULL,
 	password VARCHAR(250) NOT NULL,
 	displayname VARCHAR(250) NOT NULL,
 	imageurl TEXT,
 	datetime TIMESTAMP NOT NULL,
 
-	PRIMARY KEY (username)
+	PRIMARY KEY (email)
 );
 `
 

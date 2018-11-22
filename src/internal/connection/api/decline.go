@@ -21,7 +21,7 @@ func NewDeclineHandler(db *database.Database) *DeclineHandler {
 }
 
 type DeclineRequest struct {
-	Username   string    `json:"username"`
+	Email      string    `json:"email"`
 	Connection string    `json:"connection"`
 	Datetime   time.Time `json:"datetime"`
 }
@@ -44,7 +44,7 @@ func (c *DeclineHandler) Process(ctx context.Context, request endpoint.Request) 
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(declineQuery, r.Username, r.Connection))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(declineQuery, r.Email, r.Connection))
 	if err != nil {
 		return &DeclineResponse{
 			Success: false,
@@ -59,5 +59,5 @@ func (c *DeclineHandler) Process(ctx context.Context, request endpoint.Request) 
 const declineQuery = `
 UPDATE notification
 SET dismissed = true
-WHERE username = '%s' AND sender = '%s' AND type = 'connection-request';
+WHERE email = '%s' AND sender = '%s' AND type = 'connection-request';
 `

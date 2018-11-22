@@ -21,7 +21,7 @@ func NewRequestHandler(db *database.Database) *RequestHandler {
 }
 
 type RequestRequest struct {
-	Username   string    `json:"username"`
+	Email      string    `json:"email"`
 	Connection string    `json:"connection"`
 	Datetime   time.Time `json:"datetime"`
 }
@@ -44,7 +44,7 @@ func (c *RequestHandler) Process(ctx context.Context, request endpoint.Request) 
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(requestQuery, r.Username, r.Connection, r.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(requestQuery, r.Email, r.Connection, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &RequestResponse{
 			Success: false,
@@ -58,7 +58,7 @@ func (c *RequestHandler) Process(ctx context.Context, request endpoint.Request) 
 
 const requestQuery = `
 INSERT INTO notification (
-	username,
+	email,
 	type,
 	sender,
 	dismissed,

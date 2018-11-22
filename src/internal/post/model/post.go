@@ -5,7 +5,7 @@ import (
 )
 
 type Post struct {
-	Username string    `json:"username"`
+	Email    string    `json:"email"`
 	Avatar   Avatar    `json:"avatar"`
 	Post     string    `json:"post"`
 	Imageurl string    `json:"imageurl"`
@@ -23,28 +23,28 @@ type Avatar struct {
 
 const ModelCreateQuery = `
 CREATE TABLE post (
-	username VARCHAR(250) NOT NULL,
+	email VARCHAR(250) NOT NULL,
 	post TEXT NOT NULL,
 	imageurl TEXT,
 	likes INTEGER,
 	dislikes INTEGER,
 	datetime TIMESTAMP NOT NULL,
 
-	PRIMARY KEY (username, datetime),
-	FOREIGN KEY (username) references profile (username)
+	PRIMARY KEY (email, datetime),
+	FOREIGN KEY (email) references profile (email)
 );
 
 CREATE TABLE reaction (
-	username VARCHAR(250) NOT NULL,
+	email VARCHAR(250) NOT NULL,
 	posttime TIMESTAMP NOT NULL,
 	connection VARCHAR(250) NOT NULL,
 	datetime TIMESTAMP NOT NULL,
 	reaction VARCHAR(250) NOT NULL,
 
-	PRIMARY KEY (username, posttime, connection, datetime, reaction),
-	FOREIGN KEY (username) references profile (username),
-	FOREIGN KEY (connection) references profile (username),
-	FOREIGN KEY (username, posttime) references post (username, datetime)
+	PRIMARY KEY (email, posttime, connection, datetime, reaction),
+	FOREIGN KEY (email) references profile (email),
+	FOREIGN KEY (connection) references profile (email),
+	FOREIGN KEY (email, posttime) references post (email, datetime)
 );
 `
 

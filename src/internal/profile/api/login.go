@@ -21,7 +21,7 @@ func NewLoginHandler(db *database.Database) *LoginHandler {
 }
 
 type LoginRequest struct {
-	Username    string    `json:"username"`
+	Email       string    `json:"email"`
 	Password    string    `json:"password"`
 	DisplayName string    `json:"displayname"`
 	Datetime    time.Time `json:"datetime"`
@@ -46,7 +46,7 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	result, err := c.db.ExecQuery(c.db.BuildQuery(loginQuery, r.Username, r.Password))
+	result, err := c.db.ExecQuery(c.db.BuildQuery(loginQuery, r.Email, r.Password))
 	if err != nil {
 		return &LoginResponse{
 			Displayname: "",
@@ -59,7 +59,7 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 		if err != nil {
 			return &LoginResponse{
 				Displayname: "",
-				Imageurl: "",
+				Imageurl:    "",
 			}, err
 		}
 	}
@@ -75,5 +75,5 @@ SELECT
 		ELSE imageurl
 	END
 FROM profile
-WHERE username = '%s' AND password = '%s';
+WHERE email = '%s' AND password = '%s';
 `

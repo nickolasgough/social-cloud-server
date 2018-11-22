@@ -22,7 +22,7 @@ func NewListHandler(db *database.Database) *ListHandler {
 }
 
 type ListRequest struct {
-	Username string `json:"username"`
+	Email    string `json:"email"`
 	Feedname string `json:"feedname"`
 	Cursor   string `json:"cursor"`
 	Limit    string `json:"limit"`
@@ -58,9 +58,9 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	results, err := c.db.ExecQuery(
 		c.db.BuildQuery(
 			listQuery,
-			r.Username,
-			r.Username,
-			r.Username,
+			r.Email,
+			r.Email,
+			r.Email,
 			r.Feedname,
 			offset,
 			limit,
@@ -78,7 +78,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var datetime string
 	for results.Next() {
 		err = results.Scan(
-			&post.Username,
+			&post.Email,
 			&avator.Displayname,
 			&avator.Imageurl,
 			&post.Post,
@@ -112,7 +112,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 
 const listQuery = `
 SELECT
-	po.username,
+	po.email,
 	pr.displayname,
 	CASE
 		WHEN pr.imageurl IS NULL THEN ''
@@ -130,7 +130,7 @@ SELECT
 			SELECT
 				COUNT(r.connection)
 			FROM reaction r
-			WHERE r.username = po.username AND r.posttime = po.datetime AND r.connection = '%s' AND r.reaction = 'liked'
+			WHERE r.email = po.email AND r.posttime = po.datetime AND r.connection = '%s' AND r.reaction = 'liked'
 		) > 0 THEN TRUE
 		ELSE FALSE
 	END,
@@ -139,18 +139,18 @@ SELECT
 			SELECT
 				COUNT(r.connection)
 			FROM reaction r
-			WHERE r.username = po.username AND r.posttime = po.datetime AND r.connection = '%s' AND r.reaction = 'disliked'
+			WHERE r.email = po.email AND r.posttime = po.datetime AND r.connection = '%s' AND r.reaction = 'disliked'
 		) > 0 THEN TRUE
 		ELSE FALSE
 	END,
 	po.datetime
 FROM post po
-JOIN profile pr ON pr.username = po.username
-WHERE po.username IN (
+JOIN profile pr ON pr.email = po.email
+WHERE po.email IN (
 	SELECT
 		DISTINCT connection
 	FROM feed f
-	WHERE f.username = '%s' AND f.feedname = '%s'
+	WHERE f.email = '%s' AND f.feedname = '%s'
 )
 ORDER BY po.datetime DESC
 OFFSET %s

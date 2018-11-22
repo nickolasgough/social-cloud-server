@@ -4,9 +4,8 @@ import (
 	"time"
 )
 
-
 type Notification struct {
-	Username    string    `json:"username"`
+	Email       string    `json:"email"`
 	Type        string    `json:"type"`
 	Sender      string    `json:"sender"`
 	Displayname string    `json:"displayname"`
@@ -16,15 +15,15 @@ type Notification struct {
 
 const ModelCreateQuery = `
 CREATE TABLE notification (
-	username VARCHAR(250) NOT NULL,
+	email VARCHAR(250) NOT NULL,
 	type VARCHAR(100) NOT NULL,
 	sender VARCHAR(250) NOT NULL,
 	dismissed BOOLEAN NOT NULL,
 	datetime TIMESTAMP NOT NULL,
 
-	PRIMARY KEY (username, datetime),
-	FOREIGN KEY (username) references profile (username),
-	FOREIGN KEY (sender) references profile (username)
+	PRIMARY KEY (email, datetime),
+	FOREIGN KEY (email) references profile (email),
+	FOREIGN KEY (sender) references profile (email)
 );
 `
 

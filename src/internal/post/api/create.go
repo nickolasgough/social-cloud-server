@@ -22,7 +22,7 @@ func NewCreateHandler(db *database.Database) *CreateHandler {
 }
 
 type CreateRequest struct {
-	Username  string    `json:"username"`
+	Email     string    `json:"email"`
 	Post      string    `json:"post"`
 	Filename  string    `json:"filename"`
 	Imagefile []byte    `json:"imagefile"`
@@ -56,7 +56,7 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 			}, err
 		}
 
-		imageurl, err = c.db.UploadImage(ctx, r.Username, r.Filename, contentType, imagefile)
+		imageurl, err = c.db.UploadImage(ctx, r.Email, r.Filename, contentType, imagefile)
 		if err != nil {
 			return &CreateResponse{
 				Success: false,
@@ -71,7 +71,7 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 		newurl = "NULL"
 	}
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Username, r.Post, newurl, r.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Email, r.Post, newurl, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &CreateResponse{
 			Success: false,
@@ -85,7 +85,7 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 
 const createQuery = `
 INSERT INTO post (
-	username,
+	email,
 	post,
 	imageurl,
 	likes,
