@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"bytes"
 	"io/ioutil"
-	"google.golang.org/grpc/resolver"
 )
 
 const (
