@@ -48,7 +48,28 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	var imageurl string
+	if r.Password != "" {
+		_, err := c.db.ExecStatement(c.db.BuildQuery(passwordQuery, r.Password, r.Email))
+		if err != nil {
+			return &UpdateResponse{
+				Displayname: "",
+				Password:    "",
+				Imageurl:    "",
+			}, err
+		}
+	}
+
+	if r.Displayname != "" {
+		_, err := c.db.ExecStatement(c.db.BuildQuery(displaynameQuery, r.Displayname, r.Email))
+		if err != nil {
+			return &UpdateResponse{
+				Displayname: "",
+				Password:    "",
+				Imageurl:    "",
+			}, err
+		}
+	}
+
 	if r.Imagefile != nil && len(r.Imagefile) > 0 {
 		contentType, imagefile, err := util.DecodeImageFile(r.Filename, r.Imagefile)
 		if err != nil {
@@ -59,7 +80,16 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 			}, err
 		}
 
-		imageurl, err = c.db.UploadImage(ctx, r.Email, r.Filename, contentType, imagefile)
+		imageurl, err := c.db.UploadImage(ctx, r.Email, r.Filename, contentType, imagefile)
+		if err != nil {
+			return &UpdateResponse{
+				Displayname: "",
+				Password:    "",
+				Imageurl:    "",
+			}, err
+		}
+
+		_, err = c.db.ExecStatement(c.db.BuildQuery(imageurlQuery, imageurl, r.Email))
 		if err != nil {
 			return &UpdateResponse{
 				Displayname: "",
@@ -69,35 +99,56 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 		}
 	}
 
-	var newurl string
-	if imageurl != "" {
-		newurl = fmt.Sprintf("'%s'", imageurl)
-	} else {
-		newurl = "NULL"
-	}
-
-	_, err := c.db.ExecStatement(c.db.BuildQuery(updateQuery, r.Displayname, r.Password, newurl, r.Email))
+	result, err := c.db.ExecQuery(c.db.BuildQuery(updateQuery, r.Email))
 	if err != nil {
-		return UpdateResponse{
+		return &LoginResponse{
 			Displayname: "",
 			Password:    "",
 			Imageurl:    "",
 		}, err
 	}
 
-	if imageurl == "NULL" {
-		imageurl = ""
+	var ur UpdateResponse
+	if result.Next() {
+		err = result.Scan(&ur.Displayname, &ur.Password, &ur.Imageurl)
+		if err != nil {
+			return &UpdateResponse{
+				Displayname: "",
+				Password:    "",
+				Imageurl:    "",
+			}, err
+		}
 	}
 
-	return &UpdateResponse{
-		Displayname: r.Displayname,
-		Password:    r.Password,
-		Imageurl:    imageurl,
-	}, nil
+	return &ur, nil
 }
 
-const updateQuery = `
+const displaynameQuery = `
 UPDATE profile
-SET displayname = '%s', password = '%s', imageurl = %s
+SET displayname = '%s'
 WHERE email = '%s'
+`
+
+const passwordQuery = `
+UPDATE profile
+SET password = '%s'
+WHERE email = '%s'
+`
+
+const imageurlQuery = `
+UPDATE profile
+SET imageurl = '%s'
+WHERE email = '%s'
+`
+
+const updateQuery = `
+SELECT
+	displayname,
+	password,
+	CASE 
+		WHEN imageurl IS NULL THEN ''
+		ELSE imageurl
+	END
+FROM profile
+WHERE email = '%s';
 `
