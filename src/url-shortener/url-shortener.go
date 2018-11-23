@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"bytes"
 	"io/ioutil"
+	"google.golang.org/grpc/resolver"
 )
 
 const (
@@ -47,9 +48,12 @@ func ShortenUrl(longUrl string) (string, error) {
 
 	var response apiResponse
 	err = json.Unmarshal(responseBody, &response)
+	fmt.Printf("JSON response: %s\n", responseBody)
+	fmt.Printf("Parsed response: %+v\n", response)
 	if err != nil {
 		return "", err
 	}
 
+	fmt.Printf("Responding with: %+v\n", response)
 	return response.Id, nil
 }
