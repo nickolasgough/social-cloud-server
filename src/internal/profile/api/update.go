@@ -122,15 +122,15 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 	return &ur, nil
 }
 
-const displaynameQuery = `
-UPDATE profile
-SET displayname = '%s'
-WHERE email = '%s'
-`
-
 const passwordQuery = `
 UPDATE profile
 SET password = '%s'
+WHERE email = '%s'
+`
+
+const displaynameQuery = `
+UPDATE profile
+SET displayname = '%s'
 WHERE email = '%s'
 `
 
