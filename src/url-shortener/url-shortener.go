@@ -33,6 +33,8 @@ func ShortenUrl(longUrl string) (string, error) {
 	}
 
 	requestUrl := fmt.Sprintf("%s?key=%s", apiUrl, apiKey)
+	fmt.Printf("Request URL: %s\n", requestUrl)
+	fmt.Printf("Request body: %s\n", requestBody)
 	bodyReader := bytes.NewReader(requestBody)
 	rawResponse, err := http.Post(requestUrl, "application/json", bodyReader)
 	if err != nil {
