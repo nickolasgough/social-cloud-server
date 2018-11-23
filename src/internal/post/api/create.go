@@ -8,6 +8,7 @@ import (
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
+	urlShortener "social-cloud-server/src/url-shortener"
 	"social-cloud-server/src/internal/util"
 )
 
@@ -26,6 +27,7 @@ type CreateRequest struct {
 	Post      string    `json:"post"`
 	Filename  string    `json:"filename"`
 	Imagefile []byte    `json:"imagefile"`
+	Linkurl   string    `json:"linkurl"`
 	Datetime  time.Time `json:"datetime"`
 }
 
@@ -62,16 +64,28 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 				Success: false,
 			}, err
 		}
-	}
 
-	var newurl string
-	if imageurl != "" {
-		newurl = fmt.Sprintf("'%s'", imageurl)
+		imageurl = fmt.Sprintf("'%s'", imageurl)
 	} else {
-		newurl = "NULL"
+		imageurl = "NULL"
 	}
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Email, r.Post, newurl, r.Datetime.Format(time.RFC3339)))
+	var linkurl string
+	if r.Linkurl != "" {
+		var err error
+		linkurl, err = urlShortener.ShortenUrl(r.Linkurl)
+		if err != nil {
+			return &CreateResponse{
+				Success: false,
+			}, err
+		}
+
+		linkurl = fmt.Sprintf("'%s'", linkurl)
+	} else {
+		linkurl = "NULL"
+	}
+
+	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Email, r.Post, imageurl, linkurl, r.Datetime.Format(time.RFC3339)))
 	if err != nil {
 		return &CreateResponse{
 			Success: false,
@@ -88,6 +102,7 @@ INSERT INTO post (
 	email,
 	post,
 	imageurl,
+	linkurl,
 	likes,
 	dislikes,
 	datetime
@@ -95,6 +110,7 @@ INSERT INTO post (
 VALUES (
 	'%s',
 	'%s',
+	%s,
 	%s,
 	0,
 	0,
