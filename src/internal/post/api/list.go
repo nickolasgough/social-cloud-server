@@ -124,7 +124,10 @@ SELECT
 		WHEN po.imageurl IS NULL THEN ''
 		ELSE po.imageurl
 	END,
-	po.linkurl,
+	CASE
+		WHEN po.linkurl IS NULL THEN ''
+		ELSE po.linkurl
+	END,
 	po.likes,
 	po.dislikes,
 	CASE
