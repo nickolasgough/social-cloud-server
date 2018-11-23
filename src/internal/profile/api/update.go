@@ -7,7 +7,6 @@ import (
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/util"
-	"fmt"
 )
 
 type UpdateHandler struct {

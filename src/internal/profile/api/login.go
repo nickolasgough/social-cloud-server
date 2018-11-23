@@ -70,3 +70,15 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 
 	return &lr, nil
 }
+
+const loginQuery = `
+SELECT
+	displayname,
+	password,
+	CASE 
+		WHEN imageurl IS NULL THEN ''
+		ELSE imageurl
+	END
+FROM profile
+WHERE email = '%s' AND password = '%s';
+`
