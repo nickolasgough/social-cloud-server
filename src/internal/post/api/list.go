@@ -83,6 +83,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 			&avator.Imageurl,
 			&post.Post,
 			&post.Imageurl,
+			&post.Linkurl,
 			&post.Likes,
 			&post.Dislikes,
 			&post.Liked,
@@ -123,6 +124,7 @@ SELECT
 		WHEN po.imageurl IS NULL THEN ''
 		ELSE po.imageurl
 	END,
+	po.linkurl,
 	po.likes,
 	po.dislikes,
 	CASE
