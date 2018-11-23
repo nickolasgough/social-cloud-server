@@ -14,13 +14,11 @@ const (
 )
 
 type apiRequest struct {
-	LongUrl string `json:"longUrl"`
+	LongUrl string `json:"long_url"`
 }
 
 type apiResponse struct {
-	Kind    string `json:"kind"`
-	Id      string `json:"id"`
-	LongUrl string `json:"longUrl"`
+	Link string `json:"link"`
 }
 
 func ShortenUrl(longUrl string) (string, error) {
@@ -53,12 +51,9 @@ func ShortenUrl(longUrl string) (string, error) {
 
 	var response apiResponse
 	err = json.Unmarshal(responseBody, &response)
-	fmt.Printf("JSON response: %s\n", responseBody)
-	fmt.Printf("Parsed response: %+v\n", response)
 	if err != nil {
 		return "", err
 	}
 
-	fmt.Printf("Responding with: %+v\n", response)
-	return response.Id, nil
+	return response.Link, nil
 }
