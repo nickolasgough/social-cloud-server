@@ -80,7 +80,6 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 			}, err
 		}
 
-		fmt.Printf("Short link: %s\n", linkurl)
 		linkurl = fmt.Sprintf("'%s'", linkurl)
 	} else {
 		linkurl = "NULL"
