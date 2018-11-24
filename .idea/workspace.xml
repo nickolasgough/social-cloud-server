@@ -2,9 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="9a8076a5-6a31-4998-a810-4802fe938261" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/src/internal/profile/api/search.go" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/internal/profile/model/profile.go" afterPath="$PROJECT_DIR$/src/internal/profile/model/profile.go" />
+      <change beforePath="$PROJECT_DIR$/src/internal/profile/api/search.go" afterPath="$PROJECT_DIR$/src/internal/profile/api/search.go" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -94,11 +93,9 @@
       <file leaf-file-name="search.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/internal/profile/api/search.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="277">
-              <caret line="40" column="34" lean-forward="true" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
-              <folding>
-                <element signature="e#13#198#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="90">
+              <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -725,11 +722,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/internal/profile/api/search.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="40" column="34" lean-forward="true" selection-start-line="40" selection-start-column="34" selection-end-line="40" selection-end-column="34" />
-          <folding>
-            <element signature="e#13#198#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="90">
+          <caret line="6" column="4" lean-forward="false" selection-start-line="6" selection-start-column="4" selection-end-line="6" selection-end-column="4" />
+          <folding />
         </state>
       </provider>
     </entry>

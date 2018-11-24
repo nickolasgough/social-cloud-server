@@ -3,11 +3,12 @@ package api
 import (
 	"context"
 	"errors"
+	"time"
+
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/util"
-	"internal/profile/model"
-	"time"
+	"social-cloud-server/src/internal/profile/model"
 )
 
 type SearchHandler struct {
