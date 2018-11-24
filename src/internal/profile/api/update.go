@@ -175,7 +175,10 @@ SELECT
 		WHEN imageurl IS NULL THEN ''
 		ELSE imageurl
 	END,
-	defaultfeed
+	CASE 
+		WHEN defaultfeed IS NULL THEN ''
+		ELSE defaultfeed
+	END
 FROM profile
 WHERE email = '%s';
 `
