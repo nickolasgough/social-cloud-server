@@ -10,6 +10,13 @@ type Profile struct {
 	Datetime    time.Time `json:"datetime"`
 }
 
+type User struct {
+	Email       string    `json:"email"`
+	Displayname string    `json:"displayname"`
+	Imageurl    string    `json:"imageurl"`
+	Datetime    time.Time `json:"datetime"`
+}
+
 const ModelCreateQuery = `
 CREATE TABLE profile (
 	email VARCHAR(250) NOT NULL,
