@@ -44,7 +44,7 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	result, err := c.db.ExecQuery(c.db.BuildQuery(searchQuery, r.Email, r.Email, r.Query))
+	result, err := c.db.ExecQuery(c.db.BuildQuery(searchQuery, r.Email, r.Email, r.Email, r.Query))
 	if err != nil {
 		return &SearchResponse{
 			Users: nil,
@@ -54,9 +54,10 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 	var users []model.User
 	var user model.User
 	var datetime string
-	var count int
+	var ccount int
+	var rcount int
 	for result.Next() {
-		err = result.Scan(&user.Email, &user.Displayname, &user.Imageurl, &count, &datetime)
+		err = result.Scan(&user.Email, &user.Displayname, &user.Imageurl, &ccount, &rcount, &datetime)
 		if err != nil {
 			return &SearchResponse{
 				Users: nil,
@@ -70,7 +71,7 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 			}, err
 		}
 
-		user.Connected = count > 0
+		user.Connected = ccount > 0 || rcount > 0
 		users = append(users, user)
 	}
 
@@ -91,6 +92,10 @@ SELECT
 		COUNT(c.connection)
 	FROM connection c
 	WHERE c.email = '%s' AND c.connection = p.email),
+	(SELECT
+		COUNT(n.email)
+	FROM notification n
+	WHERE n.sender = '%s' AND n.email = p.email AND n.type = 'connection-request' AND n.dismissed = false),
 	p.datetime
 FROM profile p
 WHERE p.email != '%s' AND p.displayname LIKE '%%%s%%';
