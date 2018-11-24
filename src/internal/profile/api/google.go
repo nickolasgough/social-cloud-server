@@ -31,6 +31,7 @@ type GoogleResponse struct {
 	Displayname string `json:"displayname"`
 	Password    string `json:"password"`
 	Imageurl    string `json:"imageurl"`
+	Defaultfeed string `json:"defaultfeed"`
 }
 
 func (c *GoogleHandler) Request() endpoint.Request {
@@ -55,17 +56,19 @@ func (c *GoogleHandler) Process(ctx context.Context, request endpoint.Request) (
 			Displayname: "",
 			Password:    "",
 			Imageurl:    "",
+			Defaultfeed: "",
 		}, err
 	}
 
 	var gr GoogleResponse
 	if result.Next() {
-		err = result.Scan(&gr.Displayname, &gr.Password, &gr.Imageurl)
+		err = result.Scan(&gr.Displayname, &gr.Password, &gr.Imageurl, &gr.Defaultfeed)
 		if err != nil {
 			return &GoogleResponse{
 				Displayname: "",
-				Password: "",
-				Imageurl: "",
+				Password:    "",
+				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 	}
@@ -79,6 +82,7 @@ INSERT INTO profile (
 	password,
 	displayname,
 	imageurl,
+	defaultfeed,
 	datetime
 )
 VALUES (
@@ -86,6 +90,7 @@ VALUES (
 	'default-password',
 	'%s',
 	'%s',
+	NULL,
 	'%s'
 );
 `
@@ -97,7 +102,8 @@ SELECT
 	CASE 
 		WHEN imageurl IS NULL THEN ''
 		ELSE imageurl
-	END
+	END,
+	defaultfeed
 FROM profile
 WHERE email = '%s';
 `

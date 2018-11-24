@@ -31,6 +31,7 @@ type LoginResponse struct {
 	Displayname string `json:"displayname"`
 	Password    string `json:"password"`
 	Imageurl    string `json:"imageurl"`
+	Defaultfeed string `json:"defaultfeed"`
 }
 
 func (c *LoginHandler) Request() endpoint.Request {
@@ -53,17 +54,19 @@ func (c *LoginHandler) Process(ctx context.Context, request endpoint.Request) (e
 			Displayname: "",
 			Password:    "",
 			Imageurl:    "",
+			Defaultfeed: "",
 		}, err
 	}
 
 	var lr LoginResponse
 	if result.Next() {
-		err = result.Scan(&lr.Displayname, &lr.Password, &lr.Imageurl)
+		err = result.Scan(&lr.Displayname, &lr.Password, &lr.Imageurl, &lr.Defaultfeed)
 		if err != nil {
 			return &LoginResponse{
 				Displayname: "",
 				Password:    "",
 				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 	}
@@ -78,7 +81,8 @@ SELECT
 	CASE 
 		WHEN imageurl IS NULL THEN ''
 		ELSE imageurl
-	END
+	END,
+	defaultfeed
 FROM profile
 WHERE email = '%s' AND password = '%s';
 `

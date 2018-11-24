@@ -25,12 +25,14 @@ type UpdateRequest struct {
 	Displayname string `json:"displayname"`
 	Filename    string `json:"filename"`
 	Imagefile   []byte `json:"imagefile"`
+	Defaultfeed string `json:"defaultfeed"`
 }
 
 type UpdateResponse struct {
 	Displayname string `json:"displayname"`
 	Password    string `json:"password"`
 	Imageurl    string `json:"imageurl"`
+	Defaultfeed string `json:"defaultfeed"`
 }
 
 func (c *UpdateHandler) Request() endpoint.Request {
@@ -54,6 +56,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 				Displayname: "",
 				Password:    "",
 				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 	}
@@ -65,6 +68,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 				Displayname: "",
 				Password:    "",
 				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 	}
@@ -76,6 +80,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 				Displayname: "",
 				Password:    "",
 				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 
@@ -85,6 +90,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 				Displayname: "",
 				Password:    "",
 				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 
@@ -94,6 +100,19 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 				Displayname: "",
 				Password:    "",
 				Imageurl:    "",
+				Defaultfeed: "",
+			}, err
+		}
+	}
+
+	if r.Defaultfeed != "" {
+		_, err := c.db.ExecStatement(c.db.BuildQuery(defaultFeedQuery, r.Defaultfeed, r.Email))
+		if err != nil {
+			return &UpdateResponse{
+				Displayname: "",
+				Password:    "",
+				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 	}
@@ -104,17 +123,19 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 			Displayname: "",
 			Password:    "",
 			Imageurl:    "",
+			Defaultfeed: "",
 		}, err
 	}
 
 	var ur UpdateResponse
 	if result.Next() {
-		err = result.Scan(&ur.Displayname, &ur.Password, &ur.Imageurl)
+		err = result.Scan(&ur.Displayname, &ur.Password, &ur.Imageurl, &ur.Defaultfeed)
 		if err != nil {
 			return &UpdateResponse{
 				Displayname: "",
 				Password:    "",
 				Imageurl:    "",
+				Defaultfeed: "",
 			}, err
 		}
 	}
@@ -140,6 +161,12 @@ SET imageurl = '%s'
 WHERE email = '%s'
 `
 
+const defaultFeedQuery = `
+UPDATE profile
+SET defaultfeed = '%s'
+WHERE email = '%s'
+`
+
 const updateQuery = `
 SELECT
 	displayname,
@@ -147,7 +174,8 @@ SELECT
 	CASE 
 		WHEN imageurl IS NULL THEN ''
 		ELSE imageurl
-	END
+	END,
+	defaultfeed
 FROM profile
 WHERE email = '%s';
 `

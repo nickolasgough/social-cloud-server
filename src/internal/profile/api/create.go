@@ -63,12 +63,14 @@ INSERT INTO profile (
 	password,
 	displayname,
 	imageurl,
+	defaultfeed,
 	datetime
 )
 VALUES (
 	'%s',
 	'%s',
 	'%s',
+	NULL,
 	NULL,
 	'%s'
 );

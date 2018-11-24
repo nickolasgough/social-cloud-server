@@ -24,6 +24,7 @@ CREATE TABLE profile (
 	password VARCHAR(250) NOT NULL,
 	displayname VARCHAR(250) NOT NULL,
 	imageurl TEXT,
+	defaultfeed VARCHAR(250),
 	datetime TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (email)
