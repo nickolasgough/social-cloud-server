@@ -44,7 +44,7 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	result, err := c.db.ExecQuery(c.db.BuildQuery(searchQuery, r.Email, r.Query))
+	result, err := c.db.ExecQuery(c.db.BuildQuery(searchQuery, r.Email, r.Email, r.Query))
 	if err != nil {
 		return &SearchResponse{
 			Users: nil,
@@ -54,8 +54,9 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 	var users []model.User
 	var user model.User
 	var datetime string
+	var count int
 	for result.Next() {
-		err = result.Scan(&user.Email, &user.Displayname, &user.Imageurl, &datetime)
+		err = result.Scan(&user.Email, &user.Displayname, &user.Imageurl, &count, &datetime)
 		if err != nil {
 			return &SearchResponse{
 				Users: nil,
@@ -69,6 +70,7 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 			}, err
 		}
 
+		user.Connected = count > 0
 		users = append(users, user)
 	}
 
@@ -79,13 +81,17 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 
 const searchQuery = `
 SELECT
-	email,
-	displayname,
+	p.email,
+	p.displayname,
 	CASE 
-		WHEN imageurl IS NULL THEN ''
-		ELSE imageurl
+		WHEN p.imageurl IS NULL THEN ''
+		ELSE p.imageurl
 	END,
-	datetime
-FROM profile
-WHERE email != '%s' AND displayname LIKE '%%%s%%';
+	(SELECT
+		COUNT(c.connection)
+	FROM connection c
+	WHERE c.email = '%s' AND c.connection = p.email),
+	p.datetime
+FROM profile p
+WHERE p.email != '%s' AND p.displayname LIKE '%%%s%%';
 `

@@ -14,6 +14,7 @@ type User struct {
 	Email       string    `json:"email"`
 	Displayname string    `json:"displayname"`
 	Imageurl    string    `json:"imageurl"`
+	Connected   bool      `json:"connected"`
 	Datetime    time.Time `json:"datetime"`
 }
 
