@@ -16,6 +16,7 @@ func (s *Server) Routes() map[string]endpoint.Handler {
 		"/profile/login": profileApi.NewLoginHandler(s.Database),
 		"/profile/update": profileApi.NewUpdateHandler(s.Database),
 		"/profile/google": profileApi.NewGoogleHandler(s.Database),
+		"/user/search": profileApi.NewSearchHandler(s.Database),
 		"/connection/request": connectionApi.NewRequestHandler(s.Database),
 		"/connection/accept": connectionApi.NewAcceptHandler(s.Database),
 		"/connection/decline": connectionApi.NewDeclineHandler(s.Database),
