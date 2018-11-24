@@ -22,6 +22,7 @@ func NewSearchHandler(db *database.Database) *SearchHandler {
 }
 
 type SearchRequest struct {
+	Email string `json:"email"`
 	Query string `json:"query"`
 }
 
@@ -86,5 +87,5 @@ SELECT
 	END,
 	datetime
 FROM profile
-WHERE displayname LIKE '%%%s%%';
+WHERE email != '%s' AND displayname LIKE '%%%s%%';
 `
