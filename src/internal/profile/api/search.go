@@ -44,7 +44,7 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	result, err := c.db.ExecQuery(c.db.BuildQuery(searchQuery, r.Query))
+	result, err := c.db.ExecQuery(c.db.BuildQuery(searchQuery, r.Email, r.Query))
 	if err != nil {
 		return &SearchResponse{
 			Users: nil,
