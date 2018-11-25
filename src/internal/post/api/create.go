@@ -10,15 +10,18 @@ import (
 	"social-cloud-server/src/database"
 	urlShortener "social-cloud-server/src/url-shortener"
 	"social-cloud-server/src/internal/util"
+	"social-cloud-server/src/bucket"
 )
 
 type CreateHandler struct {
 	db *database.Database
+	b  *bucket.Bucket
 }
 
-func NewCreateHandler(db *database.Database) *CreateHandler {
+func NewCreateHandler(db *database.Database, b *bucket.Bucket) *CreateHandler {
 	return &CreateHandler{
 		db: db,
+		b:  b,
 	}
 }
 
@@ -58,7 +61,7 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 			}, err
 		}
 
-		imageurl, err = c.db.UploadImage(ctx, r.Email, r.Filename, contentType, imagefile)
+		imageurl, err = c.b.UploadImage(ctx, r.Email, r.Filename, contentType, imagefile)
 		if err != nil {
 			return &CreateResponse{
 				Success: false,

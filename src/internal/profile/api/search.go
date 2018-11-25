@@ -40,7 +40,7 @@ func (c *SearchHandler) Process(ctx context.Context, request endpoint.Request) (
 		return nil, errors.New("error: received a request that is not a SearchRequest")
 	}
 
-	lockIds := []string{"profile"}
+	lockIds := []string{"profile", "connection", "notification"}
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 

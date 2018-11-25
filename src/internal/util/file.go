@@ -10,7 +10,6 @@ import (
 	"cloud.google.com/go/storage"
 )
 
-
 func DecodeImageFile(filename string, imagebytes []byte) (string, image.Image, error) {
 	contentType := ParseContentType(filename)
 	var imagefile image.Image
@@ -25,7 +24,6 @@ func DecodeImageFile(filename string, imagebytes []byte) (string, image.Image, e
 	return contentType, imagefile, err
 }
 
-
 func EncodeImageFile(writer *storage.Writer, imagefile image.Image) error {
 	var err error
 	if writer.ContentType == "image/png" {
@@ -37,7 +35,6 @@ func EncodeImageFile(writer *storage.Writer, imagefile image.Image) error {
 	}
 	return err
 }
-
 
 func ParseContentType(filename string) string {
 	fileparts := strings.Split(filename, ".")

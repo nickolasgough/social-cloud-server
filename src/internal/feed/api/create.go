@@ -47,7 +47,16 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 	defer util.ReleaseLocks(lockIds)
 
 	for _, member := range r.Members {
-		_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Email, r.Feedname, member.Connection, member.Datetime.Format(time.RFC3339), r.Datetime.Format(time.RFC3339)))
+		_, err := c.db.ExecStatement(
+			c.db.BuildQuery(
+				createQuery,
+				r.Email,
+				r.Feedname,
+				member.Connection,
+				member.Datetime.Format(time.RFC3339),
+				r.Datetime.Format(time.RFC3339),
+			),
+		)
 		if err != nil {
 			return &CreateResponse{
 				Success: false,

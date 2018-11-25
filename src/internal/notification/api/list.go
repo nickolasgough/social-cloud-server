@@ -51,7 +51,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	}
 	limit := r.Limit
 	if limit == "" {
-		limit = "10"
+		limit = "25"
 	}
 
 	results, err := c.db.ExecQuery(

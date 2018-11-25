@@ -3,9 +3,6 @@ package database
 import (
 	"database/sql"
 	"fmt"
-	"context"
-	"image"
-	"google.golang.org/api/option"
 
 	_ "github.com/lib/pq"
 	"cloud.google.com/go/storage"
@@ -15,8 +12,6 @@ import (
 	notificationModel "social-cloud-server/src/internal/notification/model"
 	connectionModel "social-cloud-server/src/internal/connection/model"
 	feedModel "social-cloud-server/src/internal/feed/model"
-
-	"social-cloud-server/src/internal/util"
 )
 
 const (
@@ -25,10 +20,6 @@ const (
 	user = "postgres"
 	password = "Nevergiveup1"
 	dbname = "postgres"
-
-	projectID = "531719510691"
-	bucketName = "social-cloud-1540055012833.appspot.com"
-	credentialsPath = "/home/nickolas_v_gough/projects/go/src/social-cloud-server/src/key/social-cloud-69d9b56a1450.json"
 )
 
 type Database struct {
@@ -56,16 +47,6 @@ func (db *Database) ConnectDatabase() error {
 	}
 	fmt.Printf("Successfully established a connection to the database %s\n", dbname)
 
-	return nil
-}
-
-func (db *Database) ConnectBucket(ctx context.Context) error {
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile(credentialsPath))
-	if err != nil {
-		return err
-	}
-
-	db.bt = client.Bucket(bucketName)
 	return nil
 }
 
@@ -128,27 +109,4 @@ func (db *Database) ExecQuery(query string) (*sql.Rows, error) {
 
 	tx.Commit()
 	return rows, err
-}
-
-func (db *Database) UploadImage(ctx context.Context, email string, filename string, contentType string, imagefile image.Image) (string, error) {
-	filename = fmt.Sprintf("%s-%s", email, filename)
-
-	object := db.bt.Object(fmt.Sprintf("%s", filename))
-	writer := object.NewWriter(ctx)
-	writer.ContentType = contentType
-
-	err := util.EncodeImageFile(writer, imagefile)
-	writer.Close()
-	if err != nil {
-		return "", err
-	}
-
-	acl := object.ACL()
-	err = acl.Set(ctx, storage.AllUsers, storage.RoleReader)
-	if err != nil {
-		return "", err
-	}
-
-	url := fmt.Sprintf("https://storage.googleapis.com/%s/%s", bucketName, filename)
-	return url, nil
 }

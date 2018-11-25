@@ -44,7 +44,14 @@ func (c *DismissHandler) Process(ctx context.Context, request endpoint.Request) 
 	util.AcquireLocks(lockIds)
 	defer util.ReleaseLocks(lockIds)
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(dismissQuery, r.Email, r.Sender, r.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(
+		c.db.BuildQuery(
+			dismissQuery,
+			r.Email,
+			r.Sender,
+			r.Datetime.Format(time.RFC3339),
+		),
+	)
 	if err != nil {
 		return &DismissResponse{
 			Success: false,

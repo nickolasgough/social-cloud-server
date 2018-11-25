@@ -7,15 +7,18 @@ import (
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/util"
+	"social-cloud-server/src/bucket"
 )
 
 type UpdateHandler struct {
 	db *database.Database
+	b  *bucket.Bucket
 }
 
-func NewUpdateHandler(db *database.Database) *UpdateHandler {
+func NewUpdateHandler(db *database.Database, b *bucket.Bucket) *UpdateHandler {
 	return &UpdateHandler{
 		db: db,
+		b:  b,
 	}
 }
 
@@ -84,7 +87,7 @@ func (c *UpdateHandler) Process(ctx context.Context, request endpoint.Request) (
 			}, err
 		}
 
-		imageurl, err := c.db.UploadImage(ctx, r.Email, r.Filename, contentType, imagefile)
+		imageurl, err := c.b.UploadImage(ctx, r.Email, r.Filename, contentType, imagefile)
 		if err != nil {
 			return &UpdateResponse{
 				Displayname: "",

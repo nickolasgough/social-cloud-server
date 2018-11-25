@@ -72,7 +72,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 		}, err
 	}
 
-	var data []model.Post
+	var posts []model.Post
 	var post model.Post
 	var avator model.Avatar
 	var datetime string
@@ -103,11 +103,12 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 				Posts: nil,
 			}, err
 		}
-		data = append(data, post)
+
+		posts = append(posts, post)
 	}
 
 	return &ListResponse{
-		Posts: data,
+		Posts: posts,
 	}, nil
 }
 

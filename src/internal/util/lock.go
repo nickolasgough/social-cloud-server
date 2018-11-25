@@ -5,7 +5,6 @@ import (
 	"fmt"
 )
 
-
 type model struct {
 	id string
 	lock *sync.Mutex
