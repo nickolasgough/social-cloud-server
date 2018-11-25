@@ -31,7 +31,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	s := server.NewServer(http.DefaultServeMux, db)
+	s := server.NewServer(http.DefaultServeMux, db, b)
 	err = s.RegisterRoutes()
 	if err != nil {
 		fmt.Printf("Failed to register server routes: %s\n", err.Error())
