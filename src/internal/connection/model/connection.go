@@ -8,6 +8,7 @@ type Connection struct {
 	Email       string    `json:"email"`
 	Connection  string    `json:"connection"`
 	Displayname string    `json:"displayname"`
+	Imageurl    string    `json:"imageurl"`
 	Datetime    time.Time `json:"datetime"`
 }
 

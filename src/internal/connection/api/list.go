@@ -64,7 +64,13 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	var connection model.Connection
 	var datetime string
 	for results.Next() {
-		err = results.Scan(&connection.Email, &connection.Connection, &connection.Displayname, &datetime)
+		err = results.Scan(
+			&connection.Email,
+			&connection.Connection,
+			&connection.Displayname,
+			&connection.Imageurl,
+			&datetime,
+		)
 		if err != nil {
 			return &ListResponse{
 				Connections: nil,
@@ -90,6 +96,7 @@ SELECT
 	c.email,
 	c.connection,
 	p.displayname,
+	p.imageurl,
 	c.datetime
 FROM connection c
 JOIN profile p ON p.email = c.connection
