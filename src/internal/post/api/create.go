@@ -88,7 +88,16 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 		linkurl = "NULL"
 	}
 
-	_, err := c.db.ExecStatement(c.db.BuildQuery(createQuery, r.Email, r.Post, imageurl, linkurl, r.Datetime.Format(time.RFC3339)))
+	_, err := c.db.ExecStatement(
+		c.db.BuildQuery(
+			createQuery,
+			r.Email,
+			r.Post,
+			imageurl,
+			linkurl,
+			r.Datetime.Format(time.RFC3339),
+		),
+	)
 	if err != nil {
 		return &CreateResponse{
 			Success: false,
