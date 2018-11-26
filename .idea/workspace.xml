@@ -1,11 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9a8076a5-6a31-4998-a810-4802fe938261" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/src/internal/connection/api/list.go" afterPath="$PROJECT_DIR$/src/internal/connection/api/list.go" />
-      <change beforePath="$PROJECT_DIR$/src/internal/feed/api/list.go" afterPath="$PROJECT_DIR$/src/internal/feed/api/list.go" />
-    </list>
+    <list default="true" id="9a8076a5-6a31-4998-a810-4802fe938261" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -52,8 +48,8 @@
       <file leaf-file-name="list.go" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/internal/connection/api/list.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
-              <caret line="46" column="0" lean-forward="true" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+            <state relative-caret-position="403">
+              <caret line="53" column="20" lean-forward="true" selection-start-line="53" selection-start-column="20" selection-end-line="53" selection-end-column="20" />
               <folding />
             </state>
           </provider>
@@ -696,8 +692,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/internal/connection/api/list.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="46" column="0" lean-forward="true" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+        <state relative-caret-position="403">
+          <caret line="53" column="20" lean-forward="true" selection-start-line="53" selection-start-column="20" selection-end-line="53" selection-end-column="20" />
           <folding />
         </state>
       </provider>
