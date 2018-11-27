@@ -1,13 +1,15 @@
-package main
+package src
 
 import (
 	"net/http"
 	"fmt"
 	"os"
+	"context"
+
+	"google.golang.org/appengine"
 
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/server"
-	"context"
 	"social-cloud-server/src/bucket"
 )
 
@@ -37,9 +39,11 @@ func main() {
 		fmt.Printf("Failed to register server routes: %s\n", err.Error())
 		os.Exit(1)
 	}
-	err = s.ListenAndServe()
-	if err != nil {
-		fmt.Printf("Failed to listen and serve requests: %s\n", err.Error())
-		os.Exit(1)
-	}
+	//err = s.ListenAndServe()
+	//if err != nil {
+	//	fmt.Printf("Failed to listen and serve requests: %s\n", err.Error())
+	//	os.Exit(1)
+	//}
+
+	appengine.Main()
 }
