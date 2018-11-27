@@ -88,6 +88,6 @@ VALUES (
 
 const postQuery = `
 UPDATE post
-SET comment = comment + 1
+SET comments = comments + 1
 WHERE email = '%s' AND datetime = '%s';
 `
