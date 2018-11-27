@@ -9,6 +9,7 @@ import (
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/internal/post/model"
 	"social-cloud-server/src/internal/util"
+	"fmt"
 )
 
 type ListHandler struct {
@@ -55,13 +56,19 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 		limit = "25"
 	}
 
+	var condition string
+	if r.Feedname != "" {
+		condition = fmt.Sprintf(feedCondition, r.Email, r.Feedname)
+	} else {
+		condition = fmt.Sprintf(userCondition, r.Email)
+	}
+
 	results, err := c.db.ExecQuery(
 		c.db.BuildQuery(
 			listQuery,
 			r.Email,
 			r.Email,
-			r.Email,
-			r.Feedname,
+			condition,
 			offset,
 			limit,
 		),
@@ -154,13 +161,21 @@ SELECT
 	po.datetime
 FROM post po
 JOIN profile pr ON pr.email = po.email
-WHERE po.email IN (
+WHERE %s
+ORDER BY po.datetime DESC
+OFFSET %s
+LIMIT %s;
+`
+
+const feedCondition = `
+po.email IN (
 	SELECT
 		DISTINCT connection
 	FROM feed f
 	WHERE f.email = '%s' AND f.feedname = '%s'
 )
-ORDER BY po.datetime DESC
-OFFSET %s
-LIMIT %s;
+`
+
+const userCondition = `
+po.email = '%s'
 `
