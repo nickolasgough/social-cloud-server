@@ -22,10 +22,12 @@ func NewListHandler(db *database.Database) *ListHandler {
 }
 
 type ListRequest struct {
-	Email    string    `json:"email"`
-	Datetime time.Time `json:"datetime"`
-	Cursor   string    `json:"cursor"`
-	Limit    string    `json:"limit"`
+	Postemail string    `json:"postemail"`
+	Posttime  time.Time `json:"posttime"`
+	Email     string    `json:"email"`
+	Feedname  string    `json:"feedname"`
+	Cursor    string    `json:"cursor"`
+	Limit     string    `json:"limit"`
 }
 
 type ListResponse struct {
@@ -58,8 +60,11 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 	results, err := c.db.ExecQuery(
 		c.db.BuildQuery(
 			listQuery,
+			r.Postemail,
+			r.Posttime.Format(time.RFC3339),
 			r.Email,
-			r.Datetime.Format(time.RFC3339),
+			r.Email,
+			r.Feedname,
 			offset,
 			limit,
 		),
@@ -113,7 +118,11 @@ SELECT
 	co.datetime
 FROM comment co
 JOIN profile pr ON pr.email = co.email
-WHERE co.postemail = '%s' AND co.posttime = '%s'
+WHERE co.postemail = '%s' AND co.posttime = '%s' AND (co.email = '%s' OR co.email IN (
+	SELECT
+		fd.connection
+	FROM feed fd
+	WHERE fd.email = '%s' AND fd.feedname = '%s'))
 ORDER BY co.datetime DESC
 OFFSET %s
 LIMIT %s;
