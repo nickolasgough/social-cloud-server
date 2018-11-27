@@ -54,7 +54,7 @@ func (db *Database) ConnectDatabase() error {
 func (db *Database) BuildModels() error {
 	modelQueries := []string{
 		//postModel.ModelDropQuery,
-		commentModel.ModelDropQuery,
+		//commentModel.ModelDropQuery,
 		//feedModel.ModelDropQuery,
 		//connectionModel.ModelDropQuery,
 		//notificationModel.ModelDropQuery,
