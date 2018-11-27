@@ -31,19 +31,6 @@ CREATE TABLE comment (
 	FOREIGN KEY (postemail) REFERENCES profile (email),
 	FOREIGN KEY (email) REFERENCES profile (email)
 );
-
-CREATE TABLE reaction (
-	email VARCHAR(250) NOT NULL,
-	posttime TIMESTAMP NOT NULL,
-	connection VARCHAR(250) NOT NULL,
-	datetime TIMESTAMP NOT NULL,
-	reaction VARCHAR(250) NOT NULL,
-
-	PRIMARY KEY (email, posttime, connection, datetime, reaction),
-	FOREIGN KEY (email) REFERENCES profile (email),
-	FOREIGN KEY (connection) REFERENCES profile (email),
-	FOREIGN KEY (email, posttime) REFERENCES post (email, datetime)
-);
 `
 
 const ModelDropQuery = `
