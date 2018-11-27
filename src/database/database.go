@@ -7,12 +7,12 @@ import (
 	_ "github.com/lib/pq"
 	"cloud.google.com/go/storage"
 
-	//profileModel "social-cloud-server/src/internal/profile/model"
-	//postModel "social-cloud-server/src/internal/post/model"
+	profileModel "social-cloud-server/src/internal/profile/model"
+	postModel "social-cloud-server/src/internal/post/model"
 	commentModel "social-cloud-server/src/internal/comment/model"
-	//notificationModel "social-cloud-server/src/internal/notification/model"
-	//connectionModel "social-cloud-server/src/internal/connection/model"
-	//feedModel "social-cloud-server/src/internal/feed/model"
+	notificationModel "social-cloud-server/src/internal/notification/model"
+	connectionModel "social-cloud-server/src/internal/connection/model"
+	feedModel "social-cloud-server/src/internal/feed/model"
 )
 
 const (
@@ -53,18 +53,18 @@ func (db *Database) ConnectDatabase() error {
 
 func (db *Database) BuildModels() error {
 	modelQueries := []string{
-		//postModel.ModelDropQuery,
-		//commentModel.ModelDropQuery,
-		//feedModel.ModelDropQuery,
-		//connectionModel.ModelDropQuery,
-		//notificationModel.ModelDropQuery,
-		//profileModel.ModelDropQuery,
+		postModel.ModelDropQuery,
+		commentModel.ModelDropQuery,
+		feedModel.ModelDropQuery,
+		connectionModel.ModelDropQuery,
+		notificationModel.ModelDropQuery,
+		profileModel.ModelDropQuery,
 
-		//profileModel.ModelCreateQuery,
-		//notificationModel.ModelCreateQuery,
-		//connectionModel.ModelCreateQuery,
-		//feedModel.ModelCreateQuery,
-		//postModel.ModelCreateQuery,
+		profileModel.ModelCreateQuery,
+		notificationModel.ModelCreateQuery,
+		connectionModel.ModelCreateQuery,
+		feedModel.ModelCreateQuery,
+		postModel.ModelCreateQuery,
 		commentModel.ModelCreateQuery,
 	}
 
