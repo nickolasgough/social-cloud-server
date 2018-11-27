@@ -14,7 +14,7 @@ type Post struct {
 	Dislikes int       `json:"dislikes"`
 	Liked    bool      `json:"liked"`
 	Disliked bool      `json:"disliked"`
-	Comments bool      `json:"comments"`
+	Comments int       `json:"comments"`
 	Datetime time.Time `json:"datetime"`
 }
 
