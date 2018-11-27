@@ -6,6 +6,7 @@ import (
 	profileApi "social-cloud-server/src/internal/profile/api"
 	connectionApi "social-cloud-server/src/internal/connection/api"
 	postApi "social-cloud-server/src/internal/post/api"
+	commentApi "social-cloud-server/src/internal/comment/api"
 	notificationApi "social-cloud-server/src/internal/notification/api"
 	feedApi "social-cloud-server/src/internal/feed/api"
 )
@@ -24,6 +25,8 @@ func (s *Server) Routes() map[string]endpoint.Handler {
 		"/post/create": postApi.NewCreateHandler(s.Database, s.Bucket),
 		"/post/react": postApi.NewReactHandler(s.Database),
 		"/post/list": postApi.NewListHandler(s.Database),
+		"/comment/create": commentApi.NewCreateHandler(s.Database),
+		"/comment/list": commentApi.NewListHandler(s.Database),
 		"/notification/list": notificationApi.NewListHandler(s.Database),
 		"/notification/dismiss": notificationApi.NewDismissHandler(s.Database),
 		"/feed/create": feedApi.NewCreateHandler(s.Database),
