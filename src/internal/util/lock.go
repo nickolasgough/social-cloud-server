@@ -13,6 +13,7 @@ type model struct {
 var models = []model{
 	{id: "profile", lock: &sync.Mutex{}},
 	{id: "post", lock: &sync.Mutex{}},
+	{id: "comment", lock: &sync.Mutex{}},
 	{id: "notification", lock: &sync.Mutex{}},
 	{id: "connection", lock: &sync.Mutex{}},
 	{id: "feed", lock: &sync.Mutex{}},

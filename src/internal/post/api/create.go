@@ -117,6 +117,7 @@ INSERT INTO post (
 	linkurl,
 	likes,
 	dislikes,
+	comments,
 	datetime
 )
 VALUES (
@@ -124,6 +125,7 @@ VALUES (
 	'%s',
 	%s,
 	%s,
+	0,
 	0,
 	0,
 	'%s'

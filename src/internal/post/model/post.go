@@ -14,6 +14,7 @@ type Post struct {
 	Dislikes int       `json:"dislikes"`
 	Liked    bool      `json:"liked"`
 	Disliked bool      `json:"disliked"`
+	Comments bool      `json:"comments"`
 	Datetime time.Time `json:"datetime"`
 }
 
@@ -30,6 +31,7 @@ CREATE TABLE post (
 	linkurl TEXT,
 	likes INTEGER,
 	dislikes INTEGER,
+	comments INTEGER,
 	datetime TIMESTAMP NOT NULL,
 
 	PRIMARY KEY (email, datetime),

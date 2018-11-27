@@ -88,6 +88,7 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 			&post.Dislikes,
 			&post.Liked,
 			&post.Disliked,
+			&post.Comments,
 			&datetime,
 		)
 		if err != nil {
@@ -149,6 +150,7 @@ SELECT
 		) > 0 THEN TRUE
 		ELSE FALSE
 	END,
+	po.comments,
 	po.datetime
 FROM post po
 JOIN profile pr ON pr.email = po.email
