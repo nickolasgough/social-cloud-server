@@ -63,6 +63,26 @@ func (c *CreateHandler) Process(ctx context.Context, request endpoint.Request) (
 	}
 
 	_, err = c.db.ExecStatement(c.db.BuildQuery(postQuery, r.Postemail, r.Posttime.Format(time.RFC3339)))
+	if err != nil {
+		return &CreateResponse{
+			Success: false,
+		}, err
+	}
+
+	_, err = c.db.ExecStatement(
+		c.db.BuildQuery(
+			notifyQuery,
+			r.Postemail,
+			"comment",
+			r.Email,
+			r.Datetime.Format(time.RFC3339),
+		),
+	)
+	if err != nil {
+		return &CreateResponse{
+			Success: false,
+		}, err
+	}
 
 	return &CreateResponse{
 		Success: true,
@@ -90,4 +110,21 @@ const postQuery = `
 UPDATE post
 SET comments = comments + 1
 WHERE email = '%s' AND datetime = '%s';
+`
+
+const notifyQuery = `
+INSERT INTO notification (
+	email,
+	type,
+	sender,
+	dismissed,
+	datetime
+)
+VALUES (
+	'%s',
+	'post-%s',
+	'%s',
+	false,
+	'%s'
+)
 `
