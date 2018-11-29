@@ -228,7 +228,6 @@
   input-imports = [
     "cloud.google.com/go/storage",
     "github.com/lib/pq",
-    "google.golang.org/appengine",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

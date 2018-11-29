@@ -16,8 +16,6 @@ import (
 )
 
 const (
-	host = "127.0.0.1"
-	port = 5432
 	user = "postgres"
 	password = "Nevergiveup1"
 	dbname = "postgres"
@@ -53,8 +51,8 @@ func (db *Database) ConnectDatabase() error {
 
 func (db *Database) BuildModels() error {
 	modelQueries := []string{
-		postModel.ModelDropQuery,
 		commentModel.ModelDropQuery,
+		postModel.ModelDropQuery,
 		feedModel.ModelDropQuery,
 		connectionModel.ModelDropQuery,
 		notificationModel.ModelDropQuery,

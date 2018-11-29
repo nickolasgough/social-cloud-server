@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"time"
+	"fmt"
 
 	"social-cloud-server/src/server/endpoint"
 	"social-cloud-server/src/database"
@@ -57,14 +58,28 @@ func (c *ListHandler) Process(ctx context.Context, request endpoint.Request) (en
 		limit = "25"
 	}
 
-	results, err := c.db.ExecQuery(
-		c.db.BuildQuery(
-			listQuery,
+	var conditionQuery string
+	if r.Feedname != "" {
+		conditionQuery = fmt.Sprintf(
+			feedCondition,
 			r.Postemail,
 			r.Posttime.Format(time.RFC3339),
 			r.Email,
 			r.Email,
 			r.Feedname,
+		)
+	} else {
+		conditionQuery = fmt.Sprintf(
+			userCondition,
+			r.Postemail,
+			r.Posttime.Format(time.RFC3339),
+		)
+	}
+
+	results, err := c.db.ExecQuery(
+		c.db.BuildQuery(
+			listQuery,
+			conditionQuery,
 			offset,
 			limit,
 		),
@@ -118,12 +133,20 @@ SELECT
 	co.datetime
 FROM comment co
 JOIN profile pr ON pr.email = co.email
-WHERE co.postemail = '%s' AND co.posttime = '%s' AND (co.email = '%s' OR co.email IN (
+WHERE %s
+ORDER BY co.datetime DESC
+OFFSET %s
+LIMIT %s;
+`
+
+const feedCondition = `
+co.postemail = '%s' AND co.posttime = '%s' AND (co.email = '%s' OR co.email IN (
 	SELECT
 		fd.connection
 	FROM feed fd
 	WHERE fd.email = '%s' AND fd.feedname = '%s'))
-ORDER BY co.datetime DESC
-OFFSET %s
-LIMIT %s;
+`
+
+const userCondition = `
+co.postemail = '%s' AND co.posttime = '%s'
 `
