@@ -1,12 +1,10 @@
-package src
+package main
 
 import (
 	"net/http"
 	"fmt"
 	"os"
 	"context"
-
-	"google.golang.org/appengine"
 
 	"social-cloud-server/src/database"
 	"social-cloud-server/src/server"
@@ -20,6 +18,8 @@ func main() {
 		fmt.Printf("Failed to connect to database: %s\n", err.Error())
 		os.Exit(1)
 	}
+	fmt.Println("Successfully established a connection to the database")
+
 	//err = db.BuildModels()
 	//if err != nil {
 	//	fmt.Printf("Failed to construct the database: %s\n", err.Error())
@@ -32,6 +32,7 @@ func main() {
 		fmt.Printf("Failed to connect to bucket: %s\n", err.Error())
 		os.Exit(1)
 	}
+	fmt.Println("Successfully established a connection to the bucket")
 
 	s := server.NewServer(http.DefaultServeMux, db, b)
 	err = s.RegisterRoutes()
@@ -39,11 +40,11 @@ func main() {
 		fmt.Printf("Failed to register server routes: %s\n", err.Error())
 		os.Exit(1)
 	}
+	fmt.Println("Successfully registered the server handlers for the app")
+
 	//err = s.ListenAndServe()
 	//if err != nil {
 	//	fmt.Printf("Failed to listen and serve requests: %s\n", err.Error())
 	//	os.Exit(1)
 	//}
-
-	appengine.Main()
 }

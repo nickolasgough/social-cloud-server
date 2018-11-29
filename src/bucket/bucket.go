@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image"
 
-	"google.golang.org/api/option"
 	"cloud.google.com/go/storage"
 
 	"social-cloud-server/src/internal/util"
@@ -26,7 +25,7 @@ func NewBucket() *Bucket {
 }
 
 func (b *Bucket) ConnectBucket(ctx context.Context) error {
-	client, err := storage.NewClient(ctx, option.WithCredentialsFile(credentialsPath))
+	client, err := storage.NewClient(ctx)
 	if err != nil {
 		return err
 	}

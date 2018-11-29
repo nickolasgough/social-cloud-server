@@ -16,11 +16,12 @@ import (
 )
 
 const (
-	host = "35.202.106.171"
+	host = "127.0.0.1"
 	port = 5432
 	user = "postgres"
 	password = "Nevergiveup1"
 	dbname = "postgres"
+	connection = "social-cloud-1540055012833:us-central1:social-cloud"
 )
 
 type Database struct {
@@ -33,8 +34,8 @@ func NewDatabase() *Database {
 }
 
 func (db *Database) ConnectDatabase() error {
-	psqlInfo := fmt.Sprintf("host=%s user=%s password=%s dbname=%s sslmode=disable",
-							host, user, password, dbname)
+	psqlInfo := fmt.Sprintf("user=%s password=%s dbname=%s sslmode=disable host=/cloudsql/%s",
+							user, password, dbname, connection)
 
 	var err error
 	db.db, err = sql.Open("postgres", psqlInfo)
@@ -46,7 +47,6 @@ func (db *Database) ConnectDatabase() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Successfully established a connection to the database %s\n", dbname)
 
 	return nil
 }
