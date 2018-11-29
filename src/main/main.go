@@ -25,6 +25,7 @@ func main() {
 	//	fmt.Printf("Failed to construct the database: %s\n", err.Error())
 	//	os.Exit(1)
 	//}
+	//fmt.Println("Successfully rebuilt the application models")
 
 	b := bucket.NewBucket()
 	err = b.ConnectBucket(context.Background())
@@ -42,9 +43,9 @@ func main() {
 	}
 	fmt.Println("Successfully registered the server handlers for the app")
 
-	//err = s.ListenAndServe()
-	//if err != nil {
-	//	fmt.Printf("Failed to listen and serve requests: %s\n", err.Error())
-	//	os.Exit(1)
-	//}
+	err = s.ListenAndServe()
+	if err != nil {
+		fmt.Printf("Failed to listen and serve requests: %s\n", err.Error())
+		os.Exit(1)
+	}
 }
