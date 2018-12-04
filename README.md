@@ -8,11 +8,17 @@ The server is setup to run on a Google App Engine instance for the social-cloud 
 First, setup the app.yaml file found in the main directory with the desired runtime of
 the project. This has been specified as the go111 flexible runtime environment. This
 environment is more flexible than previous environments and does not require the use of
-any special functions when running the application.
+any special functions when running the application. Of course, a Google Cloud Platform
+project is required to be setup before running the application. To do so, go to this address:
+https://cloud.google.com/ and follow the instructions to setup a Google Cloud Project and an
+App Engine instance. This involves installing the GCP SDK and authenticating the installed SDK
+with Google.
 
 Second, other project dependencies, such as access to the Cloud SQL instance and the Cloud
 Storage Bucket instance, are required to be setup to access the instances and their resources
 through the Google App Engine instance. Further documentation is included within each dependency.
+Note that you will also need to follow the instructions found on the GCP website to setup these
+instances. These instances may also be accessed through the virtual shell provided by GCP.
 
 Third, the project must be deployed to the Google App Engine instance through the use of the
 gcloud command-line tool. First, the Google Cloud Platform SDK command-line tool must be installed.
@@ -62,7 +68,7 @@ models from the create and drop queries of each model.
 This package contains the definitions for internal models and their API functions. This includes
 the definition of the database models, the definitions of the request and response models, and
 the definitions of the REST requests that are supported for each model. Each model within the
-application is stored in its own package within this package. Within the package of the model
+application is stored in its own package within this package. Within the package of each model
 is contained the model's model package and api package. These packages store the following.
 
 #### model
@@ -73,7 +79,6 @@ instance, and the definition of the model that is returned on requests that retu
 the given model. The structure that defines the internal representation of the model will include
 JSON tags that are used when serializing the model into a JSON representation. The entire model
 code is stored in one source file.
-
 
 #### api
 
